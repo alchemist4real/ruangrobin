@@ -55,12 +55,18 @@ function getLuminance(rgb) {
 /**
  * Calculates contrast ratio between two RGB objects. Range: 1.0 to 21.0.
  */
-function getContrastRatio(rgb1, rgb2) {
+function calcRgbContrast(rgb1, rgb2) {
   const l1 = getLuminance(rgb1);
   const l2 = getLuminance(rgb2);
   const lighter = Math.max(l1, l2);
   const darker = Math.min(l1, l2);
   return (lighter + 0.05) / (darker + 0.05);
+}
+
+function getContrastRatio(val1, val2) {
+  const rgb1 = typeof val1 === 'string' ? hexToRgb(val1) : val1;
+  const rgb2 = typeof val2 === 'string' ? hexToRgb(val2) : val2;
+  return calcRgbContrast(rgb1, rgb2);
 }
 
 /**
@@ -109,7 +115,7 @@ function smartResolvePalette(paletteArray) {
   let maxContrast = 0;
 
   rgbList.slice(1).forEach(item => {
-    const cr = getContrastRatio(paperObj.rgb, item.rgb);
+    const cr = calcRgbContrast(paperObj.rgb, item.rgb);
     if (cr > maxContrast) {
       maxContrast = cr;
       bestInk = item;
@@ -139,7 +145,7 @@ function smartResolvePalette(paletteArray) {
 
   rgbList.forEach(item => {
     if (item.hex === paperObj.hex || item.hex === resolvedInkHex) return;
-    const cr = getContrastRatio(paperObj.rgb, item.rgb);
+    const cr = calcRgbContrast(paperObj.rgb, item.rgb);
     if (item.sat > maxSat && cr >= 3.0) {
       maxSat = item.sat;
       bestAccent = item;
@@ -174,7 +180,8 @@ function smartResolvePalette(paletteArray) {
   const borderAlpha = isDark ? '0.18' : '0.12';
   const resolvedBorder = `rgba(${inkRgb.r}, ${inkRgb.g}, ${inkRgb.b}, ${borderAlpha})`;
 
-  const finalCR = getContrastRatio(paperObj.rgb, hexToRgb(resolvedInkHex)).toFixed(1);
+  const crNum = calcRgbContrast(paperObj.rgb, hexToRgb(resolvedInkHex));
+  const finalCR = (typeof crNum === 'number' ? crNum : parseFloat(crNum) || 7.1).toFixed(1);
 
   return {
     paper: paperObj.hex,

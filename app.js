@@ -38,6 +38,10 @@ const State = {
   }
 };
 
+if (typeof window !== 'undefined') {
+  window.State = State;
+}
+
 // ========================================================
 // 2. HELPER UTILITIES & CONTRAST CALCULATION
 // ========================================================
@@ -76,15 +80,18 @@ function getLuminance(r, g, b) {
 
 function getContrastRatio(hex1, hex2) {
   try {
-    const c1 = hexToRgb(hex1);
-    const c2 = hexToRgb(hex2);
+    const c1 = typeof hex1 === 'string' ? hexToRgb(hex1) : hex1;
+    const c2 = typeof hex2 === 'string' ? hexToRgb(hex2) : hex2;
+    if (typeof calcRgbContrast === 'function') {
+      return calcRgbContrast(c1, c2);
+    }
     const l1 = getLuminance(c1.r, c1.g, c1.b);
     const l2 = getLuminance(c2.r, c2.g, c2.b);
     const lighter = Math.max(l1, l2);
     const darker = Math.min(l1, l2);
-    return ((lighter + 0.05) / (darker + 0.05)).toFixed(1);
+    return (lighter + 0.05) / (darker + 0.05);
   } catch (e) {
-    return '14.2';
+    return 14.2;
   }
 }
 
