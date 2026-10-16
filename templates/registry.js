@@ -1258,11 +1258,15 @@ const TEMPLATE_ENGINES = {
       });
 
       // Central Typographic Plaque (WORD ONLY - pure typography with soft radial clearing, no rectangular card)
-      const grad = ctx.createRadialGradient(w / 2, h / 2, 40, w / 2, h / 2, 280);
-      grad.addColorStop(0, theme.paper);
-      grad.addColorStop(0.75, theme.paper);
-      grad.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = grad;
+      if (typeof ctx.createRadialGradient === 'function') {
+        const grad = ctx.createRadialGradient(w / 2, h / 2, 40, w / 2, h / 2, 280);
+        grad.addColorStop(0, theme.paper);
+        grad.addColorStop(0.75, theme.paper);
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = grad;
+      } else {
+        ctx.fillStyle = theme.paper;
+      }
       ctx.beginPath();
       ctx.ellipse(w / 2, h / 2, 280, 140, 0, 0, Math.PI * 2);
       ctx.fill();

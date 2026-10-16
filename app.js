@@ -1403,19 +1403,61 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // 4. Passcode Auth
+  const passcodeModal = document.getElementById('passcode-modal');
+  const inputPasscode = document.getElementById('input-passcode');
+
   document.getElementById('btn-close-passcode')?.addEventListener('click', () => {
-    document.getElementById('passcode-modal').style.display = 'none';
+    if (passcodeModal) passcodeModal.style.display = 'none';
   });
+
+  passcodeModal?.addEventListener('click', (e) => {
+    if (e.target === passcodeModal) {
+      passcodeModal.style.display = 'none';
+    }
+  });
+
+  inputPasscode?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      document.getElementById('btn-submit-passcode')?.click();
+    }
+  });
+
   document.getElementById('btn-submit-passcode')?.addEventListener('click', () => {
-    const val = document.getElementById('input-passcode')?.value;
+    const val = inputPasscode?.value;
     if (val === PASSCODE) {
       State.isUnlocked = true;
-      document.getElementById('passcode-modal').style.display = 'none';
-      document.getElementById('btn-top-auth').textContent = 'Tulis [unlocked]';
+      if (passcodeModal) passcodeModal.style.display = 'none';
+      const authBtn = document.getElementById('btn-top-auth');
+      if (authBtn) authBtn.textContent = 'Tulis [unlocked]';
       showToast('Authentication unlocked.');
       switchView('studio');
     } else {
       showToast('Invalid passcode.');
+    }
+  });
+
+  // Studio Lock Button
+  document.getElementById('btn-lock-tulis')?.addEventListener('click', () => {
+    State.isUnlocked = false;
+    const authBtn = document.getElementById('btn-top-auth');
+    if (authBtn) authBtn.textContent = 'Tulis';
+    switchView('shelf');
+    showToast('Studio locked.');
+  });
+
+  // Reader TOC Modal Backdrop Click
+  const tocModal = document.getElementById('reader-toc-modal');
+  tocModal?.addEventListener('click', (e) => {
+    if (e.target === tocModal) {
+      closeReaderTocModal();
+    }
+  });
+
+  // Cover Crop Modal Backdrop Click
+  const cropModal = document.getElementById('cover-crop-modal');
+  cropModal?.addEventListener('click', (e) => {
+    if (e.target === cropModal) {
+      closeCropModal();
     }
   });
 
@@ -1539,8 +1581,27 @@ document.addEventListener('DOMContentLoaded', () => {
   setupCoverPhotoEvents();
   setupPalettePresets();
 
-  // Keyboard navigation
+  // Keyboard navigation & Shortcuts
   window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (passcodeModal && passcodeModal.style.display === 'flex') {
+        passcodeModal.style.display = 'none';
+      }
+      if (tocModal && tocModal.style.display === 'flex') {
+        closeReaderTocModal();
+      }
+      if (cropModal && cropModal.style.display === 'flex') {
+        closeCropModal();
+      }
+      if (searchInp && (document.activeElement === searchInp || searchInp.value)) {
+        searchInp.value = '';
+        State.searchQuery = '';
+        if (clearBtn) clearBtn.style.display = 'none';
+        searchInp.blur();
+        renderShelf();
+      }
+    }
+
     if (State.currentView === 'reader') {
       if (e.key === 'ArrowLeft') flipPage(-1);
       if (e.key === 'ArrowRight') flipPage(1);

@@ -201,6 +201,14 @@ html, body {
   width: 210px;
 }
 
+.search-icon-svg {
+  width: 14px;
+  height: 14px;
+  color: var(--c-ink-muted);
+  flex-shrink: 0;
+}
+
+.search-text-input,
 .search-pill-input {
   border: none;
   background: transparent;
@@ -210,6 +218,7 @@ html, body {
   outline: none;
 }
 
+.search-text-input::placeholder,
 .search-pill-input::placeholder {
   color: var(--c-ink-muted);
   opacity: 0.8;
@@ -228,6 +237,26 @@ html, body {
 
 .search-clear-btn:hover {
   color: var(--c-ink);
+}
+
+.btn-top-auth {
+  background: var(--c-blue);
+  color: #ffffff;
+  border: 1px solid var(--c-blue);
+  border-radius: 999px;
+  padding: 0.38rem 1.1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.btn-top-auth:hover {
+  background: #0012b8;
+  border-color: #0012b8;
+  transform: translateY(-1px);
 }
 
 .pill-action-btn {
@@ -1256,7 +1285,7 @@ html, body {
   background: rgba(17, 20, 24, 0.65);
   backdrop-filter: blur(4px);
   z-index: 500;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   padding: 1.5rem;
@@ -1265,7 +1294,9 @@ html, body {
   transition: opacity 0.2s ease;
 }
 
-.passcode-modal-wrap.open {
+.passcode-modal-wrap.open,
+.passcode-modal-wrap[style*="display: flex"] {
+  display: flex !important;
   opacity: 1;
   pointer-events: auto;
 }
@@ -1312,6 +1343,7 @@ html, body {
 /* ========================================================
    SOLID BLUE FOOTER
 ======================================================== */
+.catalog-site-footer,
 .catalog-solid-footer {
   background-color: var(--c-blue);
   color: #ffffff;
@@ -1327,11 +1359,20 @@ html, body {
   gap: 2.5rem;
 }
 
+.footer-brand-title,
 .footer-logo-title {
   font-size: 2.2rem;
   font-weight: 700;
   font-style: italic;
   letter-spacing: -0.04em;
+  margin-bottom: 0.4rem;
+}
+
+.footer-brand-desc {
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 320px;
 }
 
 .footer-column-block {
@@ -1341,11 +1382,23 @@ html, body {
   font-size: 0.75rem;
 }
 
+.footer-col-head,
 .footer-column-heading {
   font-weight: 700;
-  margin-bottom: 0.35rem;
-  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  font-size: 0.75rem;
+  color: #ffffff;
+}
+
+.footer-link-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .footer-link-text {
