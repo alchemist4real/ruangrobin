@@ -223,8 +223,9 @@ TERRAIN MESH SURVEYED BY **PURE TYPOGRAPHY**
 HORIZONTAL STRATUM NUMBER TWENTY-FOUR {SOUTHWEST}
 THE GEOLOGY OF THE WORD RESTING ON {BEDROCK}`,
         flankOutlineWord: 'OF\nVISION',
-        crestHeight: 35,
-        dipDepth: 22,
+        elevationStep: 36,
+        crestHeight: 28,
+        dipDepth: 16,
         elevationSubtitle: 'CONTOUR INTERVAL 50M // 3D ELEVATION MESH'
       }
     },
@@ -250,6 +251,14 @@ remnants of speech across **unmeasured millennia**
 reaching the eastern shore where {we began}
 **memory crosses** the vector of departure`,
       specificParams: {
+        forwardDiagText: `The **wake we leave behind us** carves the bay
+moving relentlessly toward the {western horizon}
+every departure leaves an incision in water
+the boat cuts the mirror of the calm tide`,
+        backwardDiagText: `Returning currents carry {shells and sand}
+remnants of speech across **unmeasured millennia**
+reaching the eastern shore where {we began}
+**memory crosses** the vector of departure`,
         forwardDiagLines: `The **wake we leave behind us** carves the bay
 moving relentlessly toward the {western horizon}
 every departure leaves an incision in water
@@ -258,8 +267,9 @@ the boat cuts the mirror of the calm tide`,
 remnants of speech across **unmeasured millennia**
 reaching the eastern shore where {we began}
 **memory crosses** the vector of departure`,
-        intersectionAngle: 22,
-        centerFocalWord: 'INTERSECTION'
+        intersectionAngle: 24,
+        intersectionPlaque: 'TRAVELED WAKE',
+        centerFocalWord: 'TRAVELED WAKE'
       }
     },
 
@@ -309,6 +319,8 @@ expanding ripples across the {quiet pond}
 centrifugal language pulling away from the **calm center**
 outer circumference embracing the {vast nocturnal silence}
 every eddy returns to the **unbroken source**`,
+        innerRadius: 45,
+        outerRadius: 235,
         repetitionCount: 3,
         centerVoidLabel: 'THE QUIET EYE',
         rotationOffsetStep: 20
@@ -323,22 +335,23 @@ every eddy returns to the **unbroken source**`,
       title: 'These Rooms Are Hollow',
       author: 'ruangrobin',
       spread: 50,
-      body: `These **rooms are hollow**
-Echoes linger in the {cool plaster walls}
-Footsteps fading down **endless corridors**
-A tall window left open to the {sea wind}
-Nothing remains but **pure spatial geometry**
-The silence after speech has {quietly departed}`,
+      body: `These **rooms are hollow.**
+A suffocating {silence flakes}
+off their walls **like snow,**
+imagined as {beautiful}
+but still a **cold wet landscape,**
+endless of {solitude.}`,
       specificParams: {
-        depthLines: `These **rooms are hollow**
-Echoes linger in the {cool plaster walls}
-Footsteps fading down **endless corridors**
-A tall window left open to the {sea wind}
-Nothing remains but **pure spatial geometry**
-The silence after speech has {quietly departed}`,
+        depthLines: `These **rooms are hollow.**
+A suffocating {silence flakes}
+off their walls **like snow,**
+imagined as {beautiful}
+but still a **cold wet landscape,**
+endless of {solitude.}`,
+        depthStep: 55,
         vanishingAngle: 28,
-        recedingOpacityFloor: 0.35,
-        perspectiveOrigin: 'right'
+        opacityFloor: 0.25,
+        planeCount: 6
       }
     },
 
@@ -357,6 +370,18 @@ conscious only of {my flight} | veritably **myself again** in the cold room.
 as a butterfly | Now I do not know whether I was then
 a man dreaming I was a {butterfly} | or whether I am now a **butterfly** dreaming I am a man.`,
       specificParams: {
+        leftWingText: `Once upon a time I
+**dreamt I was a butterfly**
+fluttering hither and thither
+conscious only of {my flight}
+as a butterfly
+a man dreaming I was a {butterfly}`,
+        rightWingText: `unconscious of my {human individuality}
+as a mortal waking in the dawn.
+Suddenly I awoke and there I was,
+veritably **myself again** in the cold room.
+Now I do not know whether I was then
+or whether I am now a **butterfly** dreaming I am a man.`,
         leftWing: `Once upon a time I
 **dreamt I was a butterfly**
 fluttering hither and thither
@@ -369,6 +394,7 @@ Suddenly I awoke and there I was,
 veritably **myself again** in the cold room.
 Now I do not know whether I was then
 or whether I am now a **butterfly** dreaming I am a man.`,
+        gutter: 8,
         spineMargin: 24,
         accentWords: 'butterfly, flight, myself, individuality',
         bottomColophon: 'LEPIDOPTERA // CHUANG TZU'
@@ -471,7 +497,8 @@ silence is not empty of sound
 it vibrates with what was **deliberately omitted**
 the architecture collapses inward
 leaving only the **cadence of the fall**`,
-        angleVariance: 12,
+        rotationAngle: 12,
+        sliceOffsets: '0, 35, 15, 60, 20, 85, 40',
         accentIndices: '1, 3, 5',
         staggerDepth: 35
       }

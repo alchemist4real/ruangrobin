@@ -287,6 +287,20 @@ class SeriesRegistry {
     return true;
   }
 
+  duplicateSlide(seriesId, slideId) {
+    const series = this.getById(seriesId);
+    if (!series || !series.pages) return null;
+    const idx = series.pages.findIndex(p => p.id === slideId);
+    if (idx === -1) return null;
+    const orig = series.pages[idx];
+    const clone = JSON.parse(JSON.stringify(orig));
+    clone.id = `p-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+    clone.title = `${orig.title || 'Untitled'} (Copy)`;
+    series.pages.splice(idx + 1, 0, clone);
+    this.persist();
+    return clone;
+  }
+
   // ========================================================
   // JSON IMPORT / EXPORT
   // ========================================================

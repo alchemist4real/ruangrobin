@@ -68,12 +68,42 @@ const TEMPLATE_FIELD_DEFINITIONS = {
     referenceOrigin: 'After A. Harris (Image 5)',
     fields: [
       {
+        key: 'stepOffset',
+        label: 'Lateral Drift Step (px)',
+        type: 'number',
+        min: 10,
+        max: 60,
+        step: 2,
+        help: 'Controls the lateral horizontal shift per step as entropy sets in.',
+        defaultValue: 26
+      },
+      {
+        key: 'trackingDecay',
+        label: 'Letter Tracking Decay (em)',
+        type: 'number',
+        min: 0.05,
+        max: 0.8,
+        step: 0.05,
+        help: 'Rate at which letter-spacing expands as text fractures into entropy.',
+        defaultValue: 0.28
+      },
+      {
+        key: 'dissolveThreshold',
+        label: 'Fracture Line Threshold',
+        type: 'number',
+        min: 1,
+        max: 10,
+        step: 1,
+        help: 'Line index at which disciplined verse starts to disintegrate into drift and decay.',
+        defaultValue: 4
+      },
+      {
         key: 'openingStanzas',
         label: 'Structured Stanzas',
         type: 'textarea',
         placeholder: 'The universe is structured,\na poem scrawled in stars.\nIts lines arranged precisely,\nstanzas galaxies apart.',
         help: 'The initial disciplined verses before spatial fracture begins. Separate stanzas with blank lines.',
-        defaultValue: 'The universe is structured,\na poem scrawled in stars.\nIts lines arranged precisely,\nstanzas galaxies apart.\n\nIt seems to have a meter\nand patterns, much like rhyme.\nBut as it marches ever on\nits chaos grows with time.'
+        defaultValue: 'The universe is structured,\na poem scrawled in stars.\nIts lines arranged precisely,\nstanzas galaxies apart.'
       },
       {
         key: 'fractureLines',
@@ -81,7 +111,7 @@ const TEMPLATE_FIELD_DEFINITIONS = {
         type: 'textarea',
         placeholder: 'And sometimes poems fall apart\ntheir order getting lost',
         help: 'Verses where horizontal displacement begins to pull lines apart.',
-        defaultValue: 'And sometimes poems fall apart\ntheir order getting lost'
+        defaultValue: 'It seems to have a meter\nand patterns, much like rhyme.\nBut as it marches ever on\nits chaos grows with time.\n\nAnd sometimes poems fall apart\ntheir order getting lost'
       },
       {
         key: 'decayLetters',
@@ -90,26 +120,6 @@ const TEMPLATE_FIELD_DEFINITIONS = {
         placeholder: 'to entropy and what is happening now.',
         help: 'Terminal words dispersed letter-by-letter with hyper-wide letter-spacing.',
         defaultValue: 'to entropy and what is happening now.'
-      },
-      {
-        key: 'driftVelocity',
-        label: 'Drift Velocity Factor',
-        type: 'number',
-        min: 0.5,
-        max: 3.0,
-        step: 0.1,
-        help: 'Controls the horizontal drift acceleration of fracturing lines.',
-        defaultValue: 1.0
-      },
-      {
-        key: 'dissolveThreshold',
-        label: 'Fracture Stanza Threshold',
-        type: 'number',
-        min: 1,
-        max: 4,
-        step: 1,
-        help: 'Stanza index at which the typographic structure begins to disintegrate.',
-        defaultValue: 2
       }
     ]
   },
@@ -242,7 +252,7 @@ const TEMPLATE_FIELD_DEFINITIONS = {
         defaultValue: '(in)terazione'
       },
       {
-        key: 'staticStreamLetters',
+        key: 'staticStream',
         label: 'Radio Static Seed Glyphs',
         type: 'text',
         placeholder: 'A v a ^ Y A v x V A i ^',
@@ -294,24 +304,34 @@ const TEMPLATE_FIELD_DEFINITIONS = {
         defaultValue: 'OF\nVISION'
       },
       {
-        key: 'crestHeight',
-        label: 'Ridge Crest Amplitude',
+        key: 'elevationStep',
+        label: 'Elevation Vertical Step (px)',
         type: 'number',
-        min: 15,
+        min: 28,
         max: 60,
-        step: 5,
-        help: 'Height of the sinusoidal mountain crests (px).',
-        defaultValue: 35
+        step: 2,
+        help: 'Vertical spacing between topographic contour lines (minimum 28px).',
+        defaultValue: 36
+      },
+      {
+        key: 'crestHeight',
+        label: 'Ridge Crest Amplitude (px)',
+        type: 'number',
+        min: 12,
+        max: 36,
+        step: 2,
+        help: 'Height of the sinusoidal mountain crest (clamped to prevent margin clipping).',
+        defaultValue: 28
       },
       {
         key: 'dipDepth',
-        label: 'Valley Dip Depth',
+        label: 'Valley Dip Depth (px)',
         type: 'number',
-        min: 10,
-        max: 50,
-        step: 5,
-        help: 'Depth of the sinusoidal valley depressions (px).',
-        defaultValue: 22
+        min: 8,
+        max: 24,
+        step: 2,
+        help: 'Depth of the sinusoidal valley depressions (clamped).',
+        defaultValue: 16
       },
       {
         key: 'elevationSubtitle',
@@ -330,45 +350,45 @@ const TEMPLATE_FIELD_DEFINITIONS = {
   cross: {
     id: 'cross',
     name: 'Diagonal Cross',
-    subtitle: 'Lattice Intersection',
+    subtitle: 'Lattice Intersection (Traveled Wake)',
     chapterCategory: 'geometry',
     chapterName: 'Chapter II: Structural Geometry',
-    description: 'Two orthogonal streams of text intersecting diagonally across the page at opposing angles.',
+    description: 'Intersecting diagonal text rays forming an optical lattice across opposing angles, anchored by a central typographic plaque.',
     referenceOrigin: 'Image 4 "Traveled Wake"',
     fields: [
       {
-        key: 'forwardDiagLines',
-        label: 'Forward Diagonal Stream (-Angle)',
+        key: 'forwardDiagText',
+        label: 'Forward Diagonal Rays (-Angle)',
         type: 'textarea',
-        placeholder: 'The wake we leave behind us\ncarves the silent surface\nmoving toward the western rim',
-        help: 'Text lines tilting downwards forward along the primary diagonal axis.',
-        defaultValue: 'The wake we leave behind us\ncarves the silent surface of the bay,\nmoving relentlessly toward the horizon.\nEvery departure leaves an incision in water.'
+        placeholder: 'TRAVELED THIS WAKE,\nACROSS A LOSS AT SEA\nWHAT AND DRIFTWOOD RAKE.\nCROSSING NAMESAKE.',
+        help: 'Text lines tilting downwards forward along the primary diagonal axis. Each line forms a parallel ray in the optical lattice.',
+        defaultValue: 'The **wake we leave behind us** carves the bay\nmoving relentlessly toward the {western horizon}\nevery departure leaves an incision in water\nthe boat cuts the mirror of the calm tide'
       },
       {
-        key: 'backwardDiagLines',
-        label: 'Backward Diagonal Stream (+Angle)',
+        key: 'backwardDiagText',
+        label: 'Backward Diagonal Rays (+Angle)',
         type: 'textarea',
-        placeholder: 'Returning currents carry shells\nremnants of speech across time\nreaching the eastern shore',
-        help: 'Text lines tilting upwards backward intersecting the primary axis.',
-        defaultValue: 'Returning currents carry shells and sand,\nremnants of speech across millennia,\nreaching the eastern shore where we began.\nMemory crosses the path of departure.'
+        placeholder: 'BEDDED INFERIOR LAKE.\nTO HOPE TO TAKE.\nTHE WORDS TO BE OUR PERIL\nOF BOUGH LOST FORLORN FORFEITS\nA WISHER\'S MAKE, ESCAPE,',
+        help: 'Text lines tilting upwards backward intersecting the primary axis to form the diamond optical lattice.',
+        defaultValue: 'Returning currents carry {shells and sand}\nremnants of speech across **unmeasured millennia**\nreaching the eastern shore where {we began}\n**memory crosses** the vector of departure'
+      },
+      {
+        key: 'intersectionPlaque',
+        label: 'Central Typographic Plaque',
+        type: 'text',
+        placeholder: 'TRAVELED WAKE',
+        help: 'Central pure-typographic focal plaque anchored at the lattice intersection point.',
+        defaultValue: 'TRAVELED WAKE'
       },
       {
         key: 'intersectionAngle',
         label: 'Diagonal Tilt Angle (Degrees)',
         type: 'number',
-        min: 10,
+        min: 15,
         max: 35,
-        step: 2,
-        help: 'Tilt angle in degrees for the intersecting axes.',
-        defaultValue: 22
-      },
-      {
-        key: 'centerFocalWord',
-        label: 'Intersection Pivot Word',
-        type: 'text',
-        placeholder: 'MERIDIAN',
-        help: 'Optional focal word anchoring the central intersection node.',
-        defaultValue: 'INTERSECTION'
+        step: 1,
+        help: 'Tilt angle in degrees for the intersecting axes (standard 22°–26°).',
+        defaultValue: 24
       }
     ]
   },
@@ -439,13 +459,33 @@ const TEMPLATE_FIELD_DEFINITIONS = {
         defaultValue: 'blackberry staggering juice\ndripping slowly on warm limestone\nexpanding ripples across the quiet pond\ncentrifugal language pulling away from the center\nouter circumference embracing the vast silence'
       },
       {
+        key: 'innerRadius',
+        label: 'Innermost Radius (px)',
+        type: 'number',
+        min: 42,
+        max: 100,
+        step: 5,
+        help: 'Inner void boundary radius (clamped between 42px and 235px).',
+        defaultValue: 45
+      },
+      {
+        key: 'outerRadius',
+        label: 'Outermost Radius (px)',
+        type: 'number',
+        min: 180,
+        max: 235,
+        step: 5,
+        help: 'Outer perimeter boundary radius (clamped between 42px and 235px).',
+        defaultValue: 235
+      },
+      {
         key: 'repetitionCount',
         label: 'Phrase Repetitions Per Ring',
         type: 'number',
         min: 1,
-        max: 5,
+        max: 6,
         step: 1,
-        help: 'Number of times each phrase repeats around its circular perimeter.',
+        help: 'Phrase repetitions around the circular perimeter, bounded gracefully by circumference 2*pi*r.',
         defaultValue: 3
       },
       {
@@ -482,9 +522,19 @@ const TEMPLATE_FIELD_DEFINITIONS = {
         key: 'depthLines',
         label: 'Receding Depth Lines',
         type: 'textarea',
-        placeholder: 'These rooms are hollow\nEchoes linger in the plaster\nFootsteps fading down corridors\nA door left open to the wind\nNothing remains but spatial geometry',
-        help: 'Poetic lines receding into the vanishing plane. Each line becomes smaller and fainter.',
-        defaultValue: 'These rooms are hollow\nEchoes linger in the cool plaster walls\nFootsteps fading down endless corridors\nA tall window left open to the sea wind\nNothing remains but pure spatial geometry\nThe silence after speech has departed'
+        placeholder: 'These rooms are hollow.\nA suffocating silence flakes\noff their walls like snow,\nimagined as beautiful\nbut still a cold wet landscape,\nendless of solitude.',
+        help: 'Poetic verses repeated across 3D perspective depth planes vanishing into space. Supports **bold** and {accent}.',
+        defaultValue: 'These rooms are hollow.\nA suffocating silence flakes\noff their walls like snow,\nimagined as beautiful\nbut still a cold wet landscape,\nendless of solitude.'
+      },
+      {
+        key: 'depthStep',
+        label: 'Depth Plane Step Offset (px)',
+        type: 'number',
+        min: 25,
+        max: 100,
+        step: 5,
+        help: 'Horizontal and depth spatial offset between consecutive echoing planes.',
+        defaultValue: 55
       },
       {
         key: 'vanishingAngle',
@@ -497,22 +547,24 @@ const TEMPLATE_FIELD_DEFINITIONS = {
         defaultValue: 28
       },
       {
-        key: 'recedingOpacityFloor',
-        label: 'Deepest Line Opacity Floor',
+        key: 'opacityFloor',
+        label: 'Deepest Plane Opacity Floor',
         type: 'number',
-        min: 0.2,
+        min: 0.25,
         max: 0.6,
         step: 0.05,
-        help: 'Minimum opacity of the farthest vanishing line.',
-        defaultValue: 0.35
+        help: 'Minimum opacity floor (>= 0.25) ensuring legibility and preventing vanishing into nothingness.',
+        defaultValue: 0.25
       },
       {
-        key: 'perspectiveOrigin',
-        label: 'Horizon Anchor Direction',
-        type: 'select',
-        options: ['right', 'left', 'center'],
-        help: 'Direction toward which the lines recede in space.',
-        defaultValue: 'right'
+        key: 'planeCount',
+        label: 'Number of Echo Depth Planes',
+        type: 'number',
+        min: 3,
+        max: 8,
+        step: 1,
+        help: 'Total repeated typographic depth planes echoing into the distance.',
+        defaultValue: 6
       }
     ]
   },
@@ -527,38 +579,38 @@ const TEMPLATE_FIELD_DEFINITIONS = {
     referenceOrigin: 'Image 3 "Chuang Tzu Dream"',
     fields: [
       {
-        key: 'leftWing',
+        key: 'leftWingText',
         label: 'Left Wing Verses (Right-Aligned)',
         type: 'textarea',
         placeholder: 'Once upon a time I\ndreamt I was a butterfly\nfluttering hither and thither\nconscious only of my happiness\nas a butterfly',
         help: 'Lines for the left wing, right-aligned towards the central spine axis.',
-        defaultValue: 'Once upon a time I\ndreamt I was a butterfly\nfluttering hither and thither\nconscious only of my flight\nas a butterfly'
+        defaultValue: 'Once upon a time I\n**dreamt I was a butterfly**\nfluttering hither and thither\nconscious only of {my flight}\nas a butterfly\na man dreaming I was a {butterfly}'
       },
       {
-        key: 'rightWing',
+        key: 'rightWingText',
         label: 'Right Wing Verses (Left-Aligned)',
         type: 'textarea',
         placeholder: 'unconscious of my individuality\nas a human being.\nSuddenly I awoke and there I was,\nveritably myself again.\nNow I do not know',
         help: 'Lines for the right wing, left-aligned towards the outer margins.',
-        defaultValue: 'unconscious of my individuality\nas a mortal human being.\nSuddenly I awoke and there I was,\nveritably myself again in the cold room.\nNow I do not know'
+        defaultValue: 'unconscious of my {human individuality}\nas a mortal waking in the dawn.\nSuddenly I awoke and there I was,\nveritably **myself again** in the cold room.\nNow I do not know whether I was then\nor whether I am now a **butterfly** dreaming I am a man.'
       },
       {
-        key: 'spineMargin',
-        label: 'Central Spine Gutter (px)',
+        key: 'gutter',
+        label: 'Central Spine Gutter Width (%)',
         type: 'number',
-        min: 10,
-        max: 60,
-        step: 5,
-        help: 'Spacing width between the left wing and right wing columns.',
-        defaultValue: 24
+        min: 4,
+        max: 16,
+        step: 1,
+        help: 'Spacing percentage between the bilateral wing columns (standard: 8%).',
+        defaultValue: 8
       },
       {
         key: 'accentWords',
         label: 'Accent Keywords (Comma-Separated)',
         type: 'text',
-        placeholder: 'butterfly, awake, flight, dreamt',
+        placeholder: 'butterfly, flight, myself, individuality',
         help: 'Words highlighted with the electric palette accent color.',
-        defaultValue: 'butterfly, dreamt, awoke, flight'
+        defaultValue: 'butterfly, flight, myself, individuality'
       },
       {
         key: 'bottomColophon',
@@ -566,7 +618,7 @@ const TEMPLATE_FIELD_DEFINITIONS = {
         type: 'text',
         placeholder: 'LEPIDOPTERA // CHUANG TZU',
         help: 'Bottom label grounding the central vertical symmetry axis.',
-        defaultValue: 'LEPIDOPTERA // BILATERAL AXIS'
+        defaultValue: 'LEPIDOPTERA // CHUANG TZU'
       }
     ]
   },
@@ -580,47 +632,43 @@ const TEMPLATE_FIELD_DEFINITIONS = {
     subtitle: 'Airy Typographic Texture',
     chapterCategory: 'textures',
     chapterName: 'Chapter III: Typographic Textures',
-    description: 'Classical book prose block with expansive, breathing word-spacing, initial drop-cap, and micro-colophon.',
-    referenceOrigin: 'Image 3',
+    description: 'Classical book prose block with expansive, breathing word-spacing and dynamic compaction.',
+    referenceOrigin: 'Image 3 ("oh, hello there — my little me")',
     fields: [
       {
-        key: 'dropCap',
-        label: 'Initial Drop Cap / Word',
-        type: 'text',
-        placeholder: 'O',
-        help: 'Single prominent initial capital letter or lead-in word.',
-        defaultValue: 'O'
-      },
-      {
         key: 'proseBody',
-        label: 'Justified Prose-Poetry Block',
+        label: 'Justified Prose Block',
         type: 'textarea',
         placeholder: 'oh, hello there — my little me. how have you been? did you ever imagine your life would turn out this way? have your dreams come true yet? we are about to turn twenty-four soon. funny, isn\'t it? some of our dreams are finally starting to take shape faintly, slowly, not exactly as we once pictured them, but they\'re there. and now, I\'m just trying to live our life the best I can.',
-        help: 'Continuous literary prose justified with open, airy inter-word spacing.',
+        help: 'Prose text where every line stretches flush across the column with airy word gaps. Supports **bold** and {accent}.',
         defaultValue: 'oh, hello there — my little me. how have you been? did you ever imagine your life would turn out this way? have your dreams come true yet? we are about to turn twenty-four soon. funny, isn\'t it? some of our dreams are finally starting to take shape faintly, slowly, not exactly as we once pictured them, but they\'re there. and now, I\'m just trying to live our life the best I can.'
       },
       {
-        key: 'preamble',
-        label: 'Italic Preamble / Lead',
-        type: 'text',
-        placeholder: 'A quiet conversation across fifteen years of silence.',
-        help: 'Italicized subtitle or epigraph preceding the justified block.',
-        defaultValue: 'A quiet letter to an earlier version of oneself.'
+        key: 'wordSpacingCompaction',
+        label: 'Word-Spacing Compaction (%)',
+        type: 'number',
+        min: 0,
+        max: 100,
+        step: 5,
+        help: 'Compaction factor: 0% = maximum airy expanse, 100% = tight compact typesetting for dense text.',
+        defaultValue: 20
       },
       {
-        key: 'interwordSpacing',
-        label: 'Interword Airiness',
-        type: 'select',
-        options: ['airy', 'wide', 'delicate', 'standard'],
-        help: 'Controls the breathing room between words across the justified measure.',
-        defaultValue: 'airy'
+        key: 'lineHeightScale',
+        label: 'Line Height Scale',
+        type: 'number',
+        min: 1.2,
+        max: 2.8,
+        step: 0.1,
+        help: 'Vertical leading multiplier for the justified prose block.',
+        defaultValue: 2.0
       },
       {
         key: 'colophonNote',
-        label: 'Footnote Colophon Citation',
+        label: 'Colophon Citation',
         type: 'text',
         placeholder: 'Monograph Plate 03 · Set in Michelangelus 11pt',
-        help: 'Quiet editorial citation placed at the bottom of the field.',
+        help: 'Micro editorial colophon at the foot of the measure.',
         defaultValue: 'Monograph Plate 03 · Set in Michelangelus 11pt'
       }
     ]
@@ -644,12 +692,22 @@ const TEMPLATE_FIELD_DEFINITIONS = {
         defaultValue: 'Seeding the shore, pale shells\nWash up the beach\n\nAnd the dead open their eyes\nStealing sight from birds.\n\nWhen the ships go out to sea\nTheir bellows kill the coastal air.\n\nI touch my face with salt\nAnd warm flowers.\n\nOn Grief\'s pier,\nI brew tea beneath winter\'s robe.\n\nWith dried wood, I build a raft\nTo capsize alone in the harbor.'
       },
       {
-        key: 'pressEmblem',
-        label: 'Press Emblem / Vignette',
+        key: 'printersMark',
+        label: "Printer's Mark / Vignette",
         type: 'text',
         placeholder: '*',
-        help: 'Typographic printer\'s mark (e.g., *, §, · · ·).',
+        help: "Typographic printer's mark or pure typographic ornament (e.g., *, §, · · ·, ❖).",
         defaultValue: '*'
+      },
+      {
+        key: 'stanzaSpacing',
+        label: 'Stanza Spacing (rem)',
+        type: 'number',
+        min: 0.5,
+        max: 2.5,
+        step: 0.25,
+        help: 'Vertical gap between consecutive stanzas.',
+        defaultValue: 1.5
       },
       {
         key: 'publicationYear',
@@ -676,43 +734,51 @@ const TEMPLATE_FIELD_DEFINITIONS = {
     subtitle: 'Diagonal Fracture',
     chapterCategory: 'textures',
     chapterName: 'Chapter III: Typographic Textures',
-    description: 'Kinetic typography with alternating angular rotations and horizontal offsets, highlighting key words in electric accent.',
-    referenceOrigin: 'Image 2 "deconstruct"',
+    description: 'Word-only kinetic typography with diagonal fracture, lateral slice offsets, and overprinting lines, strictly bounded by AABB physics (±18° max).',
+    referenceOrigin: 'Specimen 2 "Diagonal Fracture (red on my hands)"',
     fields: [
       {
         key: 'fragmentLines',
         label: 'Fragmented Verses',
         type: 'textarea',
-        placeholder: 'every structure carries its own ruin\nthe syntax breaks before the meaning\nwe speak through the fractures\nlanguage slipping through fingers\nsilence is not empty\nit vibrates with what was omitted',
-        help: 'Lines subjected to alternating angular rotation (-14° to +16°). One per row.',
-        defaultValue: 'every structure carries its own ruin\nthe syntax breaks before the meaning\nwe speak through the fractures of the wall\nlanguage slipping through cold fingers\nsilence is not empty\nit vibrates with what was omitted\nthe architecture collapses inward\nleaving only the cadence of the fall'
+        placeholder: 'every structure carries its **own silent ruin**\nthe syntax breaks before the {intended meaning}\nwe speak through the **fractures of the wall**\nlanguage slipping through cold fingers\nsilence is not empty\nit vibrates with what was omitted\nthe architecture collapses inward\nleaving only the **cadence of the fall**',
+        help: 'Lines subjected to alternating angular rotation (restricted to ±18° max). Supports **bold** and {accent} tokens.',
+        defaultValue: 'every structure carries its **own silent ruin**\nthe syntax breaks before the {intended meaning}\nwe speak through the **fractures of the wall**\nlanguage slipping like water through {cold fingers}\nsilence is not empty of sound\nit vibrates with what was **deliberately omitted**\nthe architecture collapses inward\nleaving only the **cadence of the fall**'
       },
       {
-        key: 'angleVariance',
-        label: 'Angular Rotation Range (°)',
+        key: 'rotationAngle',
+        label: 'Max Rotation Angle (±18°)',
         type: 'number',
-        min: 6,
-        max: 24,
-        step: 2,
-        help: 'Maximum degree of angular tilt applied to fractured lines.',
+        min: 4,
+        max: 18,
+        step: 1,
+        help: 'Maximum degree of angular tilt clamped within safe AABB bounds (±18° max) to prevent corner clipping.',
         defaultValue: 12
+      },
+      {
+        key: 'sliceOffsets',
+        label: 'Lateral Slice Offsets (px)',
+        type: 'text',
+        placeholder: '0, 35, 15, 60, 20, 85, 40',
+        help: 'Comma-separated lateral displacement offsets for each fractured typographic line.',
+        defaultValue: '0, 35, 15, 60, 20, 85, 40'
       },
       {
         key: 'accentIndices',
         label: 'Accent Line Numbers (0-indexed)',
         type: 'text',
-        placeholder: '0, 4, 7',
-        help: 'Comma-separated line indices that receive electric accent color and bold weight.',
-        defaultValue: '0, 4'
+        placeholder: '1, 3, 5',
+        help: 'Comma-separated line indices that receive electric series accent color and bold weight.',
+        defaultValue: '1, 3, 5'
       },
       {
         key: 'staggerDepth',
-        label: 'Horizontal Stagger Depth (%)',
+        label: 'Procedural Stagger Depth (%)',
         type: 'number',
         min: 10,
         max: 60,
         step: 5,
-        help: 'Lateral displacement range across the page measure.',
+        help: 'Fallback lateral displacement scale when explicit sliceOffsets are omitted.',
         defaultValue: 35
       }
     ]

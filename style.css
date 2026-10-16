@@ -719,12 +719,14 @@ html, body {
   gap: 0.15rem;
 }
 
-.calligram-line {
+.calligram-line,
+.calligram-silhouette-line {
   font-size: 0.8125rem;
   line-height: 1.5;
   letter-spacing: 0.14em;
   color: var(--c-ink);
   white-space: pre;
+  max-width: 100%;
 }
 
 /* 7. DECONSTRUCT (Diagonal Fracture — Image 2) */

@@ -487,6 +487,93 @@ function exportCurrentPageToA4Png() {
 }
 
 /**
+ * Draws the 300 DPI A4 Cover Plate (2480 x 3508).
+ */
+function renderCoverToA4Canvas(canvas, series) {
+  canvas.width = 2480;
+  canvas.height = 3508;
+  const ctx = canvas.getContext('2d');
+  const theme = resolveSeriesTheme(series.palette);
+
+  // Background Paper
+  ctx.fillStyle = theme.paper;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  if (series.coverImage) {
+    const img = new Image();
+    img.src = series.coverImage;
+    if (img.complete && img.naturalWidth > 0) {
+      const settings = series.coverSettings || { zoom: 1, offsetX: 0, offsetY: 0, rotation: 0 };
+      ctx.save();
+      ctx.translate(canvas.width / 2 + (settings.offsetX || 0) * 2.5, canvas.height / 2 + (settings.offsetY || 0) * 2.5);
+      if (settings.rotation) ctx.rotate((settings.rotation * Math.PI) / 180);
+      const scale = (settings.zoom || 1) * Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+      const dw = img.naturalWidth * scale;
+      const dh = img.naturalHeight * scale;
+      ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
+      ctx.restore();
+
+      const grad = ctx.createLinearGradient(0, canvas.height * 0.45, 0, canvas.height);
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(1, 'rgba(0,0,0,0.85)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '700 36px "Michelangelus"';
+      ctx.fillText((series.volNumber || 'EDITION').toUpperCase(), 200, canvas.height - 520);
+
+      ctx.font = '700 84px "Michelangelus"';
+      ctx.fillText(series.title || 'Untitled Monograph', 200, canvas.height - 400);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.font = '400 38px "Michelangelus"';
+      ctx.fillText(series.subtitle || '', 200, canvas.height - 320);
+
+      ctx.font = '700 24px "Michelangelus"';
+      ctx.fillText(`ruangrobin  ·  ${series.editionDate || '2026'}  ·  ${series.colophon || 'MONOGRAPH'}`, 200, canvas.height - 180);
+      return;
+    }
+  }
+
+  // Pure Typographic Cover Plate
+  ctx.fillStyle = theme.accent;
+  ctx.beginPath();
+  ctx.arc(200, 200, 16, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = theme.muted;
+  ctx.font = '700 28px "Michelangelus"';
+  ctx.fillText(`ruangrobin  ·  PUBLICATION SERIES`, 240, 210);
+
+  const coverTpl = series.coverTemplate || 'cascade';
+  const dummyPage = (series.pages && series.pages[0]) ? series.pages[0] : { title: series.title, body: series.subtitle || 'Pure Typographic Monograph' };
+  templateRegistry.renderCanvas(coverTpl, ctx, dummyPage, theme, 50, canvas.width, canvas.height);
+
+  ctx.fillStyle = theme.accent;
+  ctx.font = '700 32px "Michelangelus"';
+  ctx.fillText((series.volNumber || 'EDITION').toUpperCase(), 200, canvas.height - 480);
+
+  ctx.fillStyle = theme.ink;
+  ctx.font = '700 84px "Michelangelus"';
+  ctx.fillText(series.title || 'Untitled Monograph', 200, canvas.height - 370);
+
+  ctx.fillStyle = theme.muted;
+  ctx.font = '400 38px "Michelangelus"';
+  ctx.fillText(series.subtitle || '', 200, canvas.height - 290);
+
+  ctx.strokeStyle = theme.border;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(200, canvas.height - 230);
+  ctx.lineTo(canvas.width - 200, canvas.height - 230);
+  ctx.stroke();
+
+  ctx.font = '700 24px "Michelangelus"';
+  ctx.fillText(`ruangrobin  ·  ${series.editionDate || '2026'}  ·  ${series.colophon || 'MONOGRAPH ARCHIVE'}`, 200, canvas.height - 170);
+}
+
+/**
  * Multi-page E-Book PDF Generator using jsPDF.
  */
 async function exportCompleteEbookToPDF(seriesId) {
@@ -501,7 +588,6 @@ async function exportCompleteEbookToPDF(seriesId) {
   showToast('Compiling complete E-Book PDF (300 DPI)...');
 
   const { jsPDF } = window.jspdf;
-  // A4 dimensions in mm: 210 x 297 (portrait)
   const doc = new jsPDF({
     orientation: 'portrait',
     unit: 'mm',
@@ -512,8 +598,14 @@ async function exportCompleteEbookToPDF(seriesId) {
   const pages = series.pages || [];
   const total = pages.length;
 
+  // 1. Cover Plate
+  renderCoverToA4Canvas(canvas, series);
+  const coverImgData = canvas.toDataURL('image/jpeg', 0.94);
+  doc.addImage(coverImgData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+
+  // 2. All Monograph Slides
   for (let i = 0; i < total; i++) {
-    if (i > 0) doc.addPage([210, 297], 'portrait');
+    doc.addPage([210, 297], 'portrait');
     renderSlideToA4Canvas(canvas, pages[i], series, i + 1, total);
     const imgData = canvas.toDataURL('image/jpeg', 0.92);
     doc.addImage(imgData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
@@ -674,20 +766,21 @@ function renderSpecificTemplateFields(tplId, currentParams = {}) {
 
   keys.forEach(k => {
     const f = fields[k];
-    const val = currentParams[k] !== undefined ? currentParams[k] : (f.default !== undefined ? f.default : '');
+    const paramKey = f.key || k;
+    const val = currentParams[paramKey] !== undefined ? currentParams[paramKey] : (f.defaultValue !== undefined ? f.defaultValue : (f.default !== undefined ? f.default : ''));
     
     if (f.type === 'textarea') {
       html += `
         <div>
           <label class="field-label" style="font-size: 0.65rem;">${escapeHtml(f.label)}:</label>
-          <textarea class="composer-textarea specific-param-input" data-param="${k}" rows="2" placeholder="${escapeHtml(f.placeholder || '')}">${escapeHtml(val)}</textarea>
+          <textarea class="composer-textarea specific-param-input" data-param="${paramKey}" rows="2" placeholder="${escapeHtml(f.placeholder || '')}">${escapeHtml(val)}</textarea>
         </div>
       `;
     } else if (f.type === 'select' && f.options) {
       html += `
         <div>
           <label class="field-label" style="font-size: 0.65rem;">${escapeHtml(f.label)}:</label>
-          <select class="composer-select specific-param-input" data-param="${k}">
+          <select class="composer-select specific-param-input" data-param="${paramKey}">
             ${f.options.map(opt => `<option value="${opt}" ${opt === val ? 'selected' : ''}>${escapeHtml(opt)}</option>`).join('')}
           </select>
         </div>
@@ -696,7 +789,7 @@ function renderSpecificTemplateFields(tplId, currentParams = {}) {
       html += `
         <div>
           <label class="field-label" style="font-size: 0.65rem;">${escapeHtml(f.label)}:</label>
-          <input type="${f.type || 'text'}" class="composer-input specific-param-input" data-param="${k}" value="${escapeHtml(val)}" placeholder="${escapeHtml(f.placeholder || '')}">
+          <input type="${f.type || 'text'}" class="composer-input specific-param-input" data-param="${paramKey}" value="${escapeHtml(val)}" placeholder="${escapeHtml(f.placeholder || '')}">
         </div>
       `;
     }
@@ -818,11 +911,22 @@ function renderStudioSlidesCrud() {
       <div class="slide-crud-actions">
         <button type="button" class="btn-icon-sm" title="Move Up" onclick="handleReorderSlide(${idx}, -1)">&uarr;</button>
         <button type="button" class="btn-icon-sm" title="Move Down" onclick="handleReorderSlide(${idx}, 1)">&darr;</button>
+        <button type="button" class="btn-icon-sm" title="Duplicate Slide" style="font-size: 0.65rem; padding: 0.2rem 0.45rem;" onclick="handleDuplicateSlide('${p.id}')">Clone</button>
         <button type="button" class="btn-icon-sm" title="Edit Slide" style="font-size: 0.65rem; padding: 0.2rem 0.45rem;" onclick="handleEditSlide('${p.id}')">Edit</button>
         <button type="button" class="btn-icon-sm btn-danger" title="Delete Slide" style="font-size: 0.9rem; line-height: 1;" onclick="handleDeleteSlide('${p.id}')">&times;</button>
       </div>
     </div>
   `).join('');
+}
+
+function handleDuplicateSlide(slideId) {
+  const clone = seriesRegistry.duplicateSlide(State.currentEbookId, slideId);
+  if (clone) {
+    showToast(`Slide cloned: ${clone.title}`);
+    loadSeriesIntoStudio();
+    renderStudioSlidesCrud();
+    updateStudioLivePreview();
+  }
 }
 
 function handleEditSlide(slideId) {
@@ -1366,6 +1470,33 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStudioLivePreview();
   });
 
+  // Export standalone Series JS for GitHub repository
+  document.getElementById('btn-export-series-js')?.addEventListener('click', () => {
+    const series = seriesRegistry.getById(State.currentEbookId);
+    if (!series) return;
+    const cleanId = (series.id || 'series').replace(/[^a-zA-Z0-9_]/g, '_').toUpperCase() + '_SERIES';
+    const jsContent = `/**\n * ruangrobin — Modular Series Edition\n * File: series/${series.id}.js\n */\n\nconst ${cleanId} = ${JSON.stringify(series, null, 2)};\n\nif (typeof module !== 'undefined' && module.exports) {\n  module.exports = { ${cleanId} };\n}\nif (typeof window !== 'undefined') {\n  window.${cleanId} = ${cleanId};\n}\n`;
+    const blob = new Blob([jsContent], { type: 'application/javascript;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${series.id || 'edition'}.js`;
+    link.click();
+    showToast('Series JS module downloaded for GitHub repo.');
+  });
+
+  // Export series JSON
+  document.getElementById('btn-export-series-json')?.addEventListener('click', () => {
+    const series = seriesRegistry.getById(State.currentEbookId);
+    if (!series) return;
+    const jsonStr = JSON.stringify(series, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${series.id || 'edition'}.json`;
+    link.click();
+    showToast('Series JSON data downloaded.');
+  });
+
   // Live preview bindings
   document.getElementById('studio-template-select')?.addEventListener('change', (e) => {
     renderSpecificTemplateFields(e.target.value);
@@ -1426,6 +1557,7 @@ window.goToReaderPage = goToReaderPage;
 window.closeReaderTocModal = closeReaderTocModal;
 window.handleEditSlide = handleEditSlide;
 window.handleDeleteSlide = handleDeleteSlide;
+window.handleDuplicateSlide = handleDuplicateSlide;
 window.handleReorderSlide = handleReorderSlide;
 window.handleUpdateChapterTitle = handleUpdateChapterTitle;
 window.handleUpdateChapterDesc = handleUpdateChapterDesc;
