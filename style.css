@@ -1,0 +1,1649 @@
+/* 
+  ruangrobin — Pure Typographic A4 Monograph Platform
+  
+  Principles:
+  - WORD ONLY: The typography and spatial arrangement of words IS the visual art.
+  - Zero arbitrary color blocks, zero cartoon boxes, zero decorative image frames.
+  - 17 Typographic Spatial Templates
+  - True A4 Proportions: aspect-ratio: 210 / 297
+  - 1 Single Font: 'Michelangelus' exclusively
+*/
+
+@font-face {
+  font-family: 'Michelangelus';
+  src: url('fonts/Michelangelus-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Michelangelus';
+  src: url('fonts/Michelangelus-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Michelangelus';
+  src: url('fonts/Michelangelus-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Michelangelus';
+  src: url('fonts/Michelangelus-BoldItalic.ttf') format('truetype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  --c-bg: #faf6ee;
+  --c-page: #ffffff;
+  --c-blue: #0018f0;
+  --c-blue-soft: #edf0ff;
+  --c-ink: #111418;
+  --c-ink-muted: #666a73;
+  --c-border: rgba(17, 20, 24, 0.12);
+  --font-mono: 'Michelangelus';
+  --a4-ratio: 210 / 297;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Michelangelus' !important;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  background-color: var(--c-bg);
+  color: var(--c-ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Outer Publication Frame */
+.page-outer-frame {
+  max-width: 1180px;
+  margin: 1.5rem auto;
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.04);
+}
+
+/* ========================================================
+   HEADER & MINIMAL NAV
+======================================================== */
+.catalog-nav-header {
+  padding: 1.25rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--c-border);
+  background: var(--c-bg);
+}
+
+.nav-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: var(--c-ink);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-brand-group:hover {
+  opacity: 0.95;
+  transform: translateY(-1px);
+}
+
+.nav-brand-logo {
+  width: 36px;
+  height: 36px;
+  background: var(--c-blue);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  letter-spacing: -0.06em;
+  flex-shrink: 0;
+  box-shadow: 0 2px 10px rgba(0, 24, 240, 0.28);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+  animation: logoBreathing 4s ease-in-out infinite;
+}
+
+.nav-brand-group:hover .nav-brand-logo {
+  transform: rotate(18deg) scale(1.1);
+  box-shadow: 0 4px 16px rgba(0, 24, 240, 0.42);
+}
+
+@keyframes logoBreathing {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(0, 24, 240, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(0, 24, 240, 0);
+  }
+}
+
+.nav-brand-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--c-ink);
+}
+
+.floating-menu-pill {
+  display: flex;
+  align-items: center;
+  background: rgba(17, 20, 24, 0.06);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 2px;
+}
+
+.menu-pill-item {
+  background: transparent;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--c-ink-muted);
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.menu-pill-item:hover {
+  color: var(--c-ink);
+}
+
+.menu-pill-item.active {
+  background: var(--c-blue);
+  color: #fff;
+}
+
+.nav-actions-cluster {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Header Search Pill */
+.search-pill-box {
+  display: flex;
+  align-items: center;
+  background: var(--c-page);
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  gap: 0.45rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 170px;
+}
+
+.search-pill-box:focus-within {
+  border-color: var(--c-blue);
+  box-shadow: 0 0 0 2px var(--c-blue-soft);
+  width: 210px;
+}
+
+.search-pill-input {
+  border: none;
+  background: transparent;
+  font-size: 0.75rem;
+  color: var(--c-ink);
+  width: 100%;
+  outline: none;
+}
+
+.search-pill-input::placeholder {
+  color: var(--c-ink-muted);
+  opacity: 0.8;
+}
+
+.search-clear-btn {
+  background: transparent;
+  border: none;
+  font-size: 1rem;
+  color: var(--c-ink-muted);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  display: none;
+}
+
+.search-clear-btn:hover {
+  color: var(--c-ink);
+}
+
+.pill-action-btn {
+  background: var(--c-page);
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--c-ink);
+  transition: all 0.15s ease;
+}
+
+.pill-action-btn:hover {
+  border-color: var(--c-ink);
+}
+
+.pill-action-btn.lock-btn {
+  background: var(--c-blue-soft);
+  color: var(--c-blue);
+  border-color: var(--c-blue);
+}
+
+.pill-action-btn.sound-btn.active,
+.pill-action-btn.active {
+  background: var(--c-blue);
+  color: #fff;
+  border-color: var(--c-blue);
+}
+
+/* ========================================================
+   VIEW 1: SHELF & CATALOG (PURE TYPOGRAPHIC A4 COVERS)
+======================================================== */
+.a4-catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.25rem;
+  padding: 2.5rem 2.5rem 4rem;
+}
+
+.ebook-a4-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ebook-a4-card:hover {
+  transform: translateY(-6px);
+}
+
+/* Pure Typographic A4 Book Cover */
+.cover-a4-plate {
+  aspect-ratio: var(--a4-ratio);
+  background: var(--c-page);
+  border: 1px solid var(--c-border);
+  border-radius: 3px 12px 12px 3px;
+  position: relative;
+  overflow: hidden;
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 
+    inset 10px 0 16px -6px rgba(17, 20, 24, 0.12),
+    0 10px 30px rgba(0, 0, 0, 0.04);
+  border-left: 6px solid var(--c-blue);
+  transition: all 0.25s ease;
+}
+
+.ebook-a4-card:hover .cover-a4-plate {
+  box-shadow: 
+    inset 10px 0 16px -6px rgba(0, 24, 240, 0.2),
+    0 16px 40px rgba(0, 24, 240, 0.08);
+  border-color: var(--c-blue);
+}
+
+.cover-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--c-ink-muted);
+}
+
+.cover-vol-badge {
+  color: var(--c-blue);
+  font-weight: 700;
+}
+
+.cover-center-motif {
+  flex: 1;
+  margin: auto 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 250px;
+  position: relative;
+  overflow: hidden;
+  padding: 1rem 0;
+}
+
+.cover-motif-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0 0 0.5rem 0;
+}
+
+.cover-template-badge {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--c-border);
+  text-transform: uppercase;
+}
+
+.cover-title-text {
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: var(--c-ink);
+}
+
+.cover-excerpt-text {
+  font-size: 0.78125rem;
+  line-height: 1.7;
+  color: var(--c-ink-muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-style: italic;
+}
+
+.cover-footer-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--c-ink-muted);
+  border-top: 1px solid var(--c-border);
+  padding-top: 0.85rem;
+}
+
+.cover-open-btn {
+  color: var(--c-blue);
+}
+
+.a4-meta-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 0.25rem;
+}
+
+.a4-title-text {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--c-ink);
+}
+
+.a4-vol-text {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--c-blue);
+}
+
+.a4-sub-text {
+  font-size: 0.6875rem;
+  color: var(--c-ink-muted);
+  padding: 0 0.25rem;
+}
+
+/* ========================================================
+   VIEW 2: A4 E-BOOK READER (AUTHENTIC MONOGRAPH PAGES)
+======================================================== */
+.ebook-reader-stage {
+  padding: 2.5rem 2.5rem 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+}
+
+.reader-control-masthead {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--c-border);
+  padding-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.btn-reader-back {
+  background: var(--c-page);
+  border: 1px solid var(--c-border);
+  color: var(--c-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-reader-back:hover {
+  border-color: var(--c-ink);
+}
+
+.reader-page-flipper {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--c-page);
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.btn-page-step {
+  background: transparent;
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.btn-page-step:hover:not(:disabled) {
+  background: var(--c-blue);
+  color: #fff;
+  border-color: var(--c-blue);
+}
+
+.btn-page-step:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Authentic A4 Monograph Page */
+.a4-physical-page {
+  aspect-ratio: var(--a4-ratio);
+  max-width: 720px;
+  width: 100%;
+  background: var(--c-page);
+  border: 1px solid var(--c-border);
+  border-radius: 2px 12px 12px 2px;
+  padding: 3.5rem 3.5rem 4rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 
+    inset 16px 0 24px -10px rgba(17, 20, 24, 0.08),
+    0 20px 60px rgba(0, 0, 0, 0.06);
+}
+
+.a4-running-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--c-ink-muted);
+  border-bottom: 1px solid var(--c-border);
+  padding-bottom: 0.75rem;
+  margin-bottom: 2.5rem;
+}
+
+.a4-running-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--c-ink-muted);
+  border-top: 1px solid var(--c-border);
+  padding-top: 0.75rem;
+  margin-top: 2.5rem;
+}
+
+.reader-chapter-shelf {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.chapter-pill-link {
+  background: var(--c-page);
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--c-ink-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.chapter-pill-link:hover {
+  color: var(--c-ink);
+  border-color: var(--c-ink);
+}
+
+.chapter-pill-link.active {
+  background: var(--c-blue);
+  color: #fff;
+  border-color: var(--c-blue);
+}
+
+/* ========================================================
+   THE 5 TYPOGRAPHIC PRESENTATION TEMPLATES (WORD ONLY)
+======================================================== */
+
+/* 1. CASCADE (Entropy Dispersion — after A. Harris) */
+.tpl-cascade-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  height: 100%;
+}
+
+.tpl-header-block {
+  margin-bottom: 1rem;
+}
+
+.tpl-entry-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+}
+
+.tpl-entry-author {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--c-ink-muted);
+  letter-spacing: 0.05em;
+}
+
+.cascade-stanzas {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cascade-line-standard {
+  font-size: 0.9375rem;
+  line-height: 1.85;
+  white-space: pre-wrap;
+}
+
+.cascade-fracture-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.cascade-drift-line {
+  display: inline-block;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+
+.cascade-scatter-letters {
+  letter-spacing: 0.45em;
+  font-weight: 400;
+  display: inline-block;
+}
+
+/* 2. CONSTELLATION (Spatial Drift — Minimal Wide-Field Poetry) */
+.tpl-constellation-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  position: relative;
+  padding: 1rem 0;
+}
+
+.constellation-verse-item {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--c-ink);
+  white-space: pre-wrap;
+  transition: transform 0.2s ease;
+}
+
+/* 3. JUSTIFIED FIELD (Airy Typographic Texture) */
+.tpl-justified-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  height: 100%;
+  justify-content: center;
+}
+
+.justified-body-field {
+  font-size: 0.9375rem;
+  line-height: 2.3;
+  text-align: justify;
+  text-justify: inter-word;
+  word-spacing: 0.45em;
+  letter-spacing: 0.02em;
+  color: var(--c-ink);
+  white-space: pre-wrap;
+}
+
+/* 4. CONTOUR (Organic Curved Wave Flow) */
+.tpl-contour-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.contour-lines-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.contour-flowing-line {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: var(--c-ink);
+  white-space: nowrap;
+}
+
+/* 5. LETTERPRESS (Classical Monograph Stanzas) */
+.tpl-letterpress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  height: 100%;
+}
+
+.letterpress-stanzas-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  max-width: 540px;
+}
+
+.letterpress-stanza-block {
+  font-size: 0.95rem;
+  line-height: 1.9;
+  white-space: pre-wrap;
+  color: var(--c-ink);
+}
+
+.letterpress-stanza-block:nth-child(even) {
+  margin-left: 1.5rem;
+}
+
+/* 6. CALLIGRAM (Shape Map Silhouette — Image 1) */
+.tpl-calligram-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  gap: 0.15rem;
+}
+
+.calligram-line {
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+  color: var(--c-ink);
+  white-space: pre;
+}
+
+/* 7. DECONSTRUCT (Diagonal Fracture — Image 2) */
+.tpl-deconstruct-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  padding: 1.5rem 0;
+  position: relative;
+}
+
+.deconstruct-line {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  display: inline-block;
+  transform-origin: left center;
+  will-change: transform;
+  color: var(--c-ink);
+}
+
+/* 8. BUTTERFLY STEPS (Dual Column Wing — Image 3) */
+.tpl-butterfly-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  padding: 1.5rem 0;
+  justify-content: center;
+}
+
+.butterfly-step-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.75;
+}
+
+.butterfly-col-left {
+  text-align: right;
+  white-space: pre-wrap;
+}
+
+.butterfly-col-right {
+  text-align: left;
+  white-space: pre-wrap;
+}
+
+.butterfly-accent-word {
+  color: var(--c-blue);
+  font-weight: 700;
+}
+
+/* 9. DIAGONAL CROSS (Lattice Intersection — Image 4) */
+.tpl-cross-wrap {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 2rem 0;
+}
+
+.cross-axis-a {
+  transform: rotate(-24deg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.16em;
+  color: var(--c-ink);
+}
+
+.cross-axis-b {
+  position: absolute;
+  transform: rotate(24deg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  font-size: 0.875rem;
+  letter-spacing: 0.16em;
+  color: var(--c-ink);
+  opacity: 0.85;
+}
+
+/* 10. PERSPECTIVE ECHO (Vanishing Depth — Image 5) */
+.tpl-perspective-wrap {
+  perspective: 900px;
+  perspective-origin: right center;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.25rem;
+  overflow: hidden;
+}
+
+.perspective-echo-line {
+  font-size: clamp(1rem, 2.4vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  transform: rotateY(-28deg);
+  transform-origin: right center;
+  white-space: nowrap;
+  color: var(--c-ink);
+}
+
+/* 11. ARC STREAM (Sonic Radiodrama & Static Decay — Image 1) */
+.tpl-arcstream-wrap {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.arcstream-top-headline {
+  font-size: clamp(1.4rem, 2.5vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--c-ink);
+}
+
+.arcstream-curved-word {
+  display: inline-block;
+  font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--c-ink);
+  line-height: 1;
+}
+
+.arcstream-static-stream {
+  position: absolute;
+  top: 18%;
+  left: 2%;
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-family: 'Michelangelus';
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--c-ink);
+  user-select: none;
+}
+
+.arcstream-static-char {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.arcstream-foot-block {
+  margin-top: auto;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--c-ink);
+}
+
+/* 12. HELIX COIL (3D Cylindrical Spiral — Image 2) */
+.tpl-helix-wrap {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.helix-svg-stage {
+  width: 100%;
+  max-width: 540px;
+  height: 100%;
+  max-height: 600px;
+}
+
+/* 13. STUTTER MATRIX (Phonetic Echo Sound Poetry — Image 3) */
+.tpl-stutter-wrap {
+  display: grid;
+  grid-template-columns: 140px 1fr 90px;
+  gap: 1.25rem;
+  height: 100%;
+  align-items: center;
+  font-family: 'Michelangelus';
+}
+
+.stutter-flank-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  color: var(--c-ink);
+  overflow: hidden;
+}
+
+.stutter-center-core {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.85;
+  text-align: justify;
+  text-justify: inter-word;
+  color: var(--c-ink);
+}
+
+.stutter-flank-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--c-blue);
+  font-weight: 700;
+}
+
+.stutter-morse-line {
+  font-size: 0.6875rem;
+  letter-spacing: 0.35em;
+  color: var(--c-ink-muted);
+  white-space: nowrap;
+}
+
+/* 14. TOPOGRAPHY (3D Terrain Ridge Wave — Image 4) */
+.tpl-topography-wrap {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.topography-ridge-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: calc(100% - 90px);
+}
+
+.topography-wave-line {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  color: var(--c-ink);
+  transition: transform 0.2s ease;
+}
+
+.topography-flank-stacked {
+  position: absolute;
+  right: 0;
+  top: 10%;
+  bottom: 10%;
+  width: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: none;
+}
+
+.topography-outline-word {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  -webkit-text-stroke: 1.5px var(--c-ink);
+  color: transparent;
+  opacity: 0.85;
+}
+
+/* 15. VORTEX SPIRAL (Concentric Swirl / Ripple Eddies — Image 5) */
+.tpl-vortex-wrap {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.vortex-svg-stage {
+  width: 100%;
+  max-width: 580px;
+  height: 100%;
+  max-height: 600px;
+}
+
+/* ========================================================
+   VIEW 3: COMPOSE STUDIO (TYPOGRAPHY FIRST)
+======================================================== */
+.composer-studio-grid {
+  display: grid;
+  grid-template-columns: 440px 1fr;
+  gap: 2.25rem;
+  padding: 2.5rem 2.5rem 4.5rem;
+}
+
+.composer-control-card {
+  background: var(--c-page);
+  border: 1px solid var(--c-border);
+  border-radius: 16px;
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.composer-title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--c-border);
+  padding-bottom: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.field-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--c-ink-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.composer-input,
+.composer-select,
+.composer-textarea {
+  border: 1px solid var(--c-border);
+  background: var(--c-bg);
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.8125rem;
+  width: 100%;
+}
+
+.composer-input:focus,
+.composer-select:focus,
+.composer-textarea:focus {
+  outline: none;
+  border-color: var(--c-blue);
+  background: #ffffff;
+}
+
+.composer-textarea {
+  min-height: 220px;
+  line-height: 1.8;
+  resize: vertical;
+}
+
+.btn-primary-action {
+  background: var(--c-blue);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1.25rem;
+  font-weight: 700;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.btn-primary-action:hover {
+  transform: translateY(-2px);
+}
+
+.a4-live-preview-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ========================================================
+   SERIES COLOR PALETTE STUDIO CONTROLS (2 to 5 colors)
+======================================================== */
+.palette-studio-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.85rem;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+}
+
+.contrast-badge {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--c-blue);
+  background: var(--c-blue-soft);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 24, 240, 0.15);
+}
+
+.palette-swatches-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.palette-chip-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--c-page);
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  padding: 0.2rem 0.4rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.palette-color-input {
+  width: 22px;
+  height: 22px;
+  border: none;
+  padding: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  background: transparent;
+}
+
+.palette-color-hex {
+  font-size: 0.6875rem;
+  font-family: 'Michelangelus';
+  font-weight: 700;
+  color: var(--c-ink);
+}
+
+.btn-remove-color {
+  background: none;
+  border: none;
+  color: var(--c-ink-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 0 0.15rem;
+  transition: color 0.15s ease;
+}
+
+.btn-remove-color:hover {
+  color: #ff3366;
+}
+
+.btn-add-color {
+  background: var(--c-page);
+  border: 1px dashed var(--c-border);
+  border-radius: 6px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--c-ink-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-add-color:hover {
+  color: var(--c-ink);
+  border-color: var(--c-ink);
+}
+
+.btn-add-color:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-color: var(--c-border);
+}
+
+.palette-presets-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.preset-pill-btn {
+  background: var(--c-page);
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--c-ink-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-pill-btn:hover {
+  color: var(--c-ink);
+  border-color: var(--c-ink);
+}
+
+.palette-dots-preview {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.palette-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  display: inline-block;
+}
+
+/* ========================================================
+   MODAL PASSCODE
+======================================================== */
+.passcode-modal-wrap {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 20, 24, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.passcode-modal-wrap.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.passcode-modal-card {
+  background: var(--c-page);
+  border-radius: 16px;
+  border: 1px solid var(--c-border);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+  width: 100%;
+  max-width: 380px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.passcode-modal-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--c-border);
+  padding-bottom: 0.5rem;
+}
+
+.passcode-input {
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  letter-spacing: 0.15em;
+  background: var(--c-bg);
+  width: 100%;
+}
+
+.passcode-input:focus {
+  outline: none;
+  border-color: var(--c-blue);
+  background: #ffffff;
+}
+
+/* ========================================================
+   SOLID BLUE FOOTER
+======================================================== */
+.catalog-solid-footer {
+  background-color: var(--c-blue);
+  color: #ffffff;
+  padding: 3.5rem 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.footer-top-grid {
+  display: grid;
+  grid-template-columns: 2.2fr 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.footer-logo-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: -0.04em;
+}
+
+.footer-column-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.footer-column-heading {
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.footer-link-text {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.footer-link-text:hover {
+  color: #fff;
+}
+
+.footer-bottom-copy {
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.6875rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Toast */
+.toast-pill-notification {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+  background: var(--c-ink);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.8125rem;
+  z-index: 1000;
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.25s ease;
+}
+
+.toast-pill-notification.active {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* ========================================================
+   COMPOSER TABS & MODULAR CRUD CONTROLS
+======================================================== */
+.composer-tabs-bar {
+  display: flex;
+  background: rgba(17, 20, 24, 0.05);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 3px;
+  margin-bottom: 0.75rem;
+}
+
+.composer-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--c-ink-muted);
+  padding: 0.35rem 0.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.composer-tab-btn:hover {
+  color: var(--c-ink);
+  background: rgba(17, 20, 24, 0.04);
+}
+
+.composer-tab-btn.active {
+  background: #ffffff;
+  color: var(--c-ink);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.composer-tab-pane {
+  display: none;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.composer-tab-pane.active {
+  display: flex;
+}
+
+/* Slides List CRUD */
+.slides-crud-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.slide-crud-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.75rem;
+  background: #ffffff;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.slide-crud-card:hover {
+  border-color: rgba(0, 24, 240, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.slide-crud-card.active-editing {
+  border-color: var(--c-blue);
+  background: var(--c-blue-soft);
+}
+
+.slide-crud-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  overflow: hidden;
+  flex: 1;
+  margin-right: 0.5rem;
+}
+
+.slide-crud-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--c-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slide-crud-tag {
+  font-size: 0.65rem;
+  color: var(--c-ink-muted);
+}
+
+.slide-crud-actions {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.btn-icon-sm {
+  background: transparent;
+  border: 1px solid var(--c-border);
+  border-radius: 4px;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.6875rem;
+  cursor: pointer;
+  color: var(--c-ink);
+  transition: all 0.15s ease;
+}
+
+.btn-icon-sm:hover {
+  background: rgba(17, 20, 24, 0.08);
+}
+
+.btn-icon-sm.btn-danger:hover {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #b91c1c;
+}
+
+/* Chapters CRUD */
+.chapters-crud-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.chapter-crud-card {
+  padding: 0.65rem 0.75rem;
+  background: #ffffff;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+/* Modal Backdrops & Cards */
+.modal-backdrop-wrap {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 20, 24, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: modalFadeIn 0.2s ease;
+}
+
+.modal-sheet-card {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(16px) scale(0.98); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Cover Photo Crop Viewport */
+.crop-viewport-box {
+  width: 280px;
+  height: 396px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--c-blue);
+  border-radius: 8px;
+  background: #111418;
+  cursor: grab;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.crop-viewport-box:active {
+  cursor: grabbing;
+}
+
+/* Cover Photo on Shelf & Plate */
+.cover-photo-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.cover-photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(17,20,24,0.3) 0%, rgba(17,20,24,0.1) 40%, rgba(17,20,24,0.7) 100%);
+  pointer-events: none;
+}
+
+/* ========================================================
+   MOBILE RESPONSIVENESS
+======================================================== */
+@media (max-width: 900px) {
+  .page-outer-frame {
+    margin: 0;
+    border-radius: 0;
+    border: none;
+  }
+  .catalog-nav-header {
+    padding: 1rem;
+  }
+  .search-pill-box {
+    width: 110px;
+  }
+  .search-pill-box:focus-within {
+    width: 140px;
+  }
+  .floating-menu-pill {
+    display: none;
+  }
+  .a4-catalog-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding: 1.25rem;
+  }
+  .composer-studio-grid {
+    grid-template-columns: 1fr;
+    padding: 1.25rem;
+  }
+  .footer-top-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .ebook-reader-stage {
+    padding: 1.25rem 1rem 4rem;
+  }
+  .a4-physical-page {
+    padding: 2.25rem 1.5rem 2.5rem;
+    border-radius: 2px 8px 8px 2px;
+  }
+  .justified-body-field {
+    text-align: left;
+    word-spacing: normal;
+  }
+}

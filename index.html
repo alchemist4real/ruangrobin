@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ruangrobin — Pure Typographic A4 Monograph Platform</title>
+  <meta name="description" content="A curated collection of quiet poems, notes, and visual monographs in A4 publication formats.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230018f0'/><text x='50' y='63' font-size='38' font-family='Michelangelus' font-weight='bold' fill='white' text-anchor='middle' letter-spacing='-2'>r.r.</text></svg>">
+</head>
+<body>
+
+  <div class="page-outer-frame">
+
+    <!-- Top Navigation Bar -->
+    <header class="catalog-nav-header">
+      
+      <!-- Brand Group (Logo & Website Name) -->
+      <a class="nav-brand-group" id="nav-brand-btn" title="Back to Shelf">
+        <div class="nav-brand-logo">r.r.</div>
+        <span class="nav-brand-name">ruangrobin</span>
+      </a>
+
+      <!-- Floating Menu Pill (Center) -->
+      <nav class="floating-menu-pill">
+        <button class="menu-pill-item active" id="nav-tab-shelf">Shelf</button>
+        <button class="menu-pill-item" id="nav-tab-reader">Reader</button>
+        <button class="menu-pill-item" id="nav-tab-composer">Studio</button>
+        <button class="menu-pill-item" id="nav-tab-colophon">Colophon</button>
+      </nav>
+
+      <!-- Right Action Group: Search Pill & Auth Button -->
+      <div style="display: flex; align-items: center; gap: 0.5rem;">
+        
+        <!-- Search Input Pill -->
+        <div class="search-pill-box">
+          <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="catalog-search-input" class="search-text-input" placeholder="Search..." autocomplete="off">
+          <button id="search-clear-btn" class="search-clear-btn" style="display: none;">&times;</button>
+        </div>
+
+        <button class="btn-top-auth" id="btn-top-auth">Tulis (🔒)</button>
+      </div>
+
+    </header>
+
+    <!-- ========================================================
+         VIEW 1: PUBLICATION SHELF (CURATED BOOK EDITIONS)
+    ======================================================== -->
+    <main id="view-shelf" class="main-view">
+      
+      <div class="shelf-intro-banner">
+        <span class="shelf-kicker">MONOGRAPH EDITIONS &middot; ARCHIVAL SERIES</span>
+        <h1 class="shelf-headline">Words as Visual Architecture</h1>
+        <p class="shelf-subtext">
+          A pure word-only monograph platform. Spatial poetry, concrete verses, and quiet essays sculpted across true A4 sheets without arbitrary color blocks or decorative boxes.
+        </p>
+      </div>
+
+      <!-- Active Filter / Search Indicator Bar -->
+      <div id="search-results-info" class="search-feedback-bar" style="display: none;">
+        <span>Found <strong id="search-matches-count">0</strong> matching entries</span>
+        <button id="btn-reset-filter" class="pill-action-btn" style="padding: 0.15rem 0.5rem; font-size: 0.65rem;">Reset Filter</button>
+      </div>
+
+      <!-- Book Catalog Grid -->
+      <section class="a4-catalog-grid" id="catalog-grid">
+        <!-- Rendered dynamically by app.js from Series Registry -->
+      </section>
+
+    </main>
+
+    <!-- ========================================================
+         VIEW 2: A4 E-BOOK READER (AUTHENTIC MONOGRAPH PAGES)
+    ======================================================== -->
+    <main id="view-reader" class="main-view" style="display: none;">
+      <div class="ebook-reader-stage">
+        
+        <!-- Reader Masthead -->
+        <div class="reader-control-masthead">
+          <button class="btn-reader-back" id="btn-reader-back">&larr; Shelf</button>
+          
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span class="cover-pill-badge" id="reader-ebook-badge">VOL. 01</span>
+            <span style="font-size: 0.8125rem; font-weight: 700; color: var(--c-ink);" id="reader-ebook-title-bar">The Architectural Specimen</span>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+            <button class="pill-action-btn" id="btn-reader-toc">📑 Bab / Index</button>
+            <button class="pill-action-btn" id="btn-reader-pdf">📥 E-Book (PDF)</button>
+            <button class="pill-action-btn" id="btn-copy-poem">Copy Text</button>
+            <button class="pill-action-btn" id="btn-download-poem">Export A4</button>
+          </div>
+        </div>
+
+        <!-- Page Flipper Control -->
+        <div class="reader-page-flipper">
+          <button class="btn-page-step" id="btn-page-prev">&larr; Prev Page</button>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+            <span id="reader-page-indicator">Page 1 of 15</span>
+            <span id="reader-poem-title-indicator" style="font-size: 0.6875rem; color: var(--c-blue); font-weight: 700;">Entropy</span>
+          </div>
+          <button class="btn-page-step" id="btn-page-next">Next Page &rarr;</button>
+        </div>
+
+        <!-- The A4 Physical Page Sheet -->
+        <article class="a4-physical-page" id="reader-poem-stage">
+          <!-- Rendered dynamically by active template in app.js -->
+        </article>
+
+        <!-- Chapter / Page Selector Shelf -->
+        <div class="reader-chapter-shelf" id="reader-chapter-shelf">
+          <!-- Chapter pills rendered by app.js -->
+        </div>
+
+      </div>
+    </main>
+
+    <!-- ========================================================
+         VIEW 3: COMPOSE STUDIO (A4 LIVE PREVIEW & MODULAR CRUD)
+    ======================================================== -->
+    <main id="view-studio" class="main-view" style="display: none;">
+      <div class="composer-studio-grid">
+        
+        <!-- Left Controls Card -->
+        <aside class="composer-control-card">
+          
+          <div class="composer-title-bar">
+            <span>COMPOSE &amp; MANAGE</span>
+            <button class="pill-action-btn" id="btn-lock-tulis" style="padding: 0.2rem 0.6rem; font-size: 0.6875rem;">Lock (🔒)</button>
+          </div>
+
+          <!-- Studio Navigation Tabs -->
+          <div class="composer-tabs-bar">
+            <button type="button" class="composer-tab-btn active" data-tab="tab-slide-content">✏️ Slide</button>
+            <button type="button" class="composer-tab-btn" data-tab="tab-slides-crud">📋 Slides (<span id="tab-slides-count">0</span>)</button>
+            <button type="button" class="composer-tab-btn" data-tab="tab-cover-series">🎨 Series &amp; Cover</button>
+            <button type="button" class="composer-tab-btn" data-tab="tab-chapters-crud">📑 Bab (<span id="tab-chapters-count">0</span>)</button>
+          </div>
+
+          <!-- TAB 1: SLIDE CONTENT & TEMPLATE -->
+          <div id="tab-slide-content" class="composer-tab-pane active">
+            
+            <!-- Book Edition Target -->
+            <div>
+              <label class="field-label">Target Edition / Series:</label>
+              <select id="studio-series-select" class="composer-select">
+                <!-- Populated by app.js from seriesRegistry -->
+              </select>
+            </div>
+
+            <!-- Chapter (Bab) Selection -->
+            <div>
+              <label class="field-label">Assign to Bab (Chapter):</label>
+              <select id="studio-chapter-select" class="composer-select">
+                <!-- Populated dynamically based on active series chapters -->
+              </select>
+            </div>
+
+            <!-- Typographic Presentation Selector -->
+            <div>
+              <label class="field-label">Page Typographic Template:</label>
+              <select id="studio-template-select" class="composer-select">
+                <option value="cascade">1. Cascade (Entropy Dispersion)</option>
+                <option value="constellation">2. Constellation (Spatial Drift)</option>
+                <option value="justified">3. Justified Field (Airy Typography)</option>
+                <option value="contour">4. Contour (Curved Flow)</option>
+                <option value="letterpress">5. Letterpress (Classical Stanza)</option>
+                <option value="calligram">6. Calligram (Shape Map)</option>
+                <option value="deconstruct">7. Deconstruct (Diagonal Fracture)</option>
+                <option value="butterfly">8. Butterfly Steps (Dual Wing)</option>
+                <option value="cross">9. Diagonal Cross (Lattice Intersection)</option>
+                <option value="perspective">10. Perspective Echo (Vanishing Depth)</option>
+                <option value="arcstream">11. Arc Stream (Sonic Radiodrama)</option>
+                <option value="helix">12. Helix Coil (3D Spiral Cylinder)</option>
+                <option value="stutter">13. Stutter Matrix (Phonetic Echo)</option>
+                <option value="topography">14. Topography (Terrain Ridge Wave)</option>
+                <option value="vortex">15. Vortex Spiral (Concentric Swirl)</option>
+              </select>
+            </div>
+
+            <!-- Title & Author -->
+            <div style="display: flex; gap: 0.5rem;">
+              <div style="flex: 2;">
+                <label class="field-label">Slide Title:</label>
+                <input type="text" id="studio-title" class="composer-input" placeholder="Entry title...">
+              </div>
+              <div style="flex: 1;">
+                <label class="field-label">Author:</label>
+                <input type="text" id="studio-author" class="composer-input" placeholder="ruangrobin">
+              </div>
+            </div>
+
+            <!-- Spatial Spread Slider -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <label class="field-label">Spatial Dispersion Factor:</label>
+                <span id="spread-value-label" style="font-size: 0.6875rem; color: var(--c-blue); font-weight: 700;">50%</span>
+              </div>
+              <input type="range" id="studio-spread" min="10" max="100" value="50" style="width: 100%; accent-color: var(--c-blue); margin-top: 0.25rem;">
+            </div>
+
+            <!-- Free-form Words Input with Token Formatting Guide -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.2rem;">
+                <label class="field-label" style="margin: 0;">Words &amp; Verse:</label>
+                <span style="font-size: 0.625rem; color: var(--c-ink-muted);">Format: **bold**, {accent}</span>
+              </div>
+              <textarea id="studio-body" class="composer-textarea" rows="6" placeholder="Type words, poem, or prose here...
+Use **bold** for emphasized words.
+Use {accent} for electric colored terms."></textarea>
+            </div>
+
+            <!-- Dynamic Dedicated Template Fields Container -->
+            <div id="studio-specific-fields-container" style="display: flex; flex-direction: column; gap: 0.5rem; border-top: 1px dashed var(--c-border); padding-top: 0.5rem;">
+              <!-- Populated dynamically by app.js based on TEMPLATE_FIELD_DEFINITIONS -->
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 0.4rem; margin-top: 0.5rem;">
+              <button id="btn-save-poem" class="btn-primary-action" style="flex: 2;">Save Slide &rarr;</button>
+              <button id="btn-new-slide-btn" class="pill-action-btn" style="flex: 1;">+ New Slide</button>
+            </div>
+
+          </div>
+
+          <!-- TAB 2: SLIDES LIST (CRUD & REORDERING) -->
+          <div id="tab-slides-crud" class="composer-tab-pane">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="field-label" style="margin: 0;">Slides in Current Edition:</span>
+              <button id="btn-add-slide-from-crud" class="pill-action-btn" style="font-size: 0.65rem; padding: 0.2rem 0.5rem;">+ Add Slide</button>
+            </div>
+            
+            <div id="composer-slides-crud-list" class="slides-crud-list">
+              <!-- Rendered by app.js -->
+            </div>
+          </div>
+
+          <!-- TAB 3: SERIES & COVER ARTWORK -->
+          <div id="tab-cover-series" class="composer-tab-pane">
+            
+            <div>
+              <label class="field-label">Edition Title:</label>
+              <input type="text" id="series-edit-title" class="composer-input" placeholder="Title...">
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <div style="flex: 1;">
+                <label class="field-label">Volume Label:</label>
+                <input type="text" id="series-edit-vol" class="composer-input" placeholder="VOL. 01">
+              </div>
+              <div style="flex: 2;">
+                <label class="field-label">Subtitle:</label>
+                <input type="text" id="series-edit-sub" class="composer-input" placeholder="Subtitle...">
+              </div>
+            </div>
+
+            <!-- Cover Template Selector -->
+            <div>
+              <label class="field-label">Cover Typographic Motif:</label>
+              <select id="studio-cover-template-select" class="composer-select">
+                <option value="cascade">1. Cascade (Entropy Dispersion)</option>
+                <option value="constellation">2. Constellation (Spatial Drift)</option>
+                <option value="justified">3. Justified Field (Airy Typography)</option>
+                <option value="contour">4. Contour (Curved Flow)</option>
+                <option value="letterpress">5. Letterpress (Classical Stanza)</option>
+                <option value="calligram">6. Calligram (Shape Map)</option>
+                <option value="deconstruct">7. Deconstruct (Diagonal Fracture)</option>
+                <option value="butterfly">8. Butterfly Steps (Dual Wing)</option>
+                <option value="cross">9. Diagonal Cross (Lattice Intersection)</option>
+                <option value="perspective">10. Perspective Echo (Vanishing Depth)</option>
+                <option value="arcstream">11. Arc Stream (Sonic Radiodrama)</option>
+                <option value="helix">12. Helix Coil (3D Spiral Cylinder)</option>
+                <option value="stutter">13. Stutter Matrix (Phonetic Echo)</option>
+                <option value="topography">14. Topography (Terrain Ridge Wave)</option>
+                <option value="vortex">15. Vortex Spiral (Concentric Swirl)</option>
+              </select>
+            </div>
+
+            <!-- Cover Photograph Upload & Interactive Crop -->
+            <div style="border: 1px dashed var(--c-border); border-radius: 8px; padding: 0.75rem; background: #ffffff;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                <label class="field-label" style="margin: 0;">Cover Photograph / Image:</label>
+                <button type="button" id="btn-remove-cover-photo" class="btn-icon-sm btn-danger" style="display: none;">Remove Photo</button>
+              </div>
+
+              <div style="display: flex; gap: 0.4rem; align-items: center; margin-top: 0.35rem;">
+                <label for="cover-photo-file-input" class="pill-action-btn" style="cursor: pointer; flex: 1; text-align: center; padding: 0.4rem; font-size: 0.6875rem;">
+                  📷 Upload Photo...
+                </label>
+                <input type="file" id="cover-photo-file-input" accept="image/*" style="display: none;">
+                
+                <button type="button" id="btn-open-crop-modal" class="pill-action-btn" style="display: none; padding: 0.4rem 0.6rem; font-size: 0.6875rem;">
+                  🔍 Adjust Crop &amp; Zoom
+                </button>
+              </div>
+
+              <div id="cover-photo-status" style="font-size: 0.625rem; color: var(--c-ink-muted); margin-top: 0.35rem; font-style: italic;">
+                No custom photo attached (using pure typographic cover)
+              </div>
+            </div>
+
+            <!-- Series Color Palette -->
+            <div class="palette-studio-section">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.25rem;">
+                <label class="field-label" style="margin: 0;">Series Palette (2–5 Colors):</label>
+                <span id="palette-contrast-badge" class="contrast-badge">Contrast: 14.2:1</span>
+              </div>
+              <div id="palette-swatches-container" class="palette-swatches-row"></div>
+              
+              <div style="margin-top: 0.45rem;">
+                <div style="font-size: 0.6875rem; color: var(--c-ink-muted); margin-bottom: 0.25rem; font-weight: 700;">Curated Presets:</div>
+                <div class="palette-presets-wrap">
+                  <button type="button" class="preset-pill-btn" data-preset="mono">Mono (2)</button>
+                  <button type="button" class="preset-pill-btn" data-preset="klein">Klein (3)</button>
+                  <button type="button" class="preset-pill-btn" data-preset="fontana">Fontana (3)</button>
+                  <button type="button" class="preset-pill-btn" data-preset="nocturne">Nocturne (3)</button>
+                  <button type="button" class="preset-pill-btn" data-preset="autumn">Autumn (4)</button>
+                  <button type="button" class="preset-pill-btn" data-preset="swiss">Swiss (4)</button>
+                  <button type="button" class="preset-pill-btn" data-preset="forest">Forest (5)</button>
+                </div>
+              </div>
+            </div>
+
+            <button type="button" id="btn-save-series-meta" class="btn-primary-action" style="width: 100%; margin-top: 0.5rem;">Update Series Details &rarr;</button>
+
+          </div>
+
+          <!-- TAB 4: BAB (CHAPTERS) CRUD -->
+          <div id="tab-chapters-crud" class="composer-tab-pane">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="field-label" style="margin: 0;">Chapters (Bab) in Edition:</span>
+              <button id="btn-add-new-chapter" class="pill-action-btn" style="font-size: 0.65rem; padding: 0.2rem 0.5rem;">+ New Bab</button>
+            </div>
+
+            <div id="composer-chapters-crud-list" class="chapters-crud-list">
+              <!-- Rendered by app.js -->
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- Right: Live A4 Preview -->
+        <section class="a4-live-preview-wrap">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; font-weight: 700; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: flex; gap: 0.35rem; align-items: center;">
+              <span style="color: var(--c-ink-muted); margin-right: 0.2rem;">PREVIEW:</span>
+              <button type="button" id="btn-preview-mode-page" class="pill-action-btn active" style="padding: 0.2rem 0.65rem; font-size: 0.6875rem;">Page Sheet</button>
+              <button type="button" id="btn-preview-mode-cover" class="pill-action-btn" style="padding: 0.2rem 0.65rem; font-size: 0.6875rem;">Book Cover</button>
+            </div>
+            <div style="display: flex; gap: 0.4rem;">
+              <button id="btn-preview-download" class="pill-action-btn">Export A4 PNG</button>
+            </div>
+          </div>
+
+          <div id="studio-live-preview-box">
+            <!-- Rendered in real-time by app.js -->
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ========================================================
+         VIEW 4: COLOPHON (ABOUT)
+    ======================================================== -->
+    <main id="view-colophon" class="main-view" style="display: none;">
+      <div class="colophon-wrap">
+        
+        <h2 style="font-size: 2rem; font-weight: 700; font-style: italic; letter-spacing: -0.03em;">Colophon</h2>
+        
+        <p style="font-size: 0.9375rem; line-height: 1.8; color: var(--c-ink);">
+          <strong>ruangrobin</strong> is an architectural monograph and spatial poetry engine dedicated to the belief that words are themselves visual objects.
+        </p>
+
+        <p style="font-size: 0.9375rem; line-height: 1.8; color: var(--c-ink-muted);">
+          Set exclusively in <strong>Michelangelus</strong> typography. True ISO 216 A4 aspect ratio (210 &times; 297 mm). Zero extraneous color blocks, zero decorative cartoon boxes, zero ungrounded frames.
+        </p>
+
+        <div style="padding: 1.25rem; background: var(--c-blue-soft); border-radius: 8px; border: 1px solid var(--c-border); font-size: 0.8125rem;">
+          <div style="font-weight: 700; color: var(--c-blue); margin-bottom: 0.35rem;">15 Spatial Typographic Paradigms</div>
+          <div style="line-height: 1.7; color: var(--c-ink);">
+            1. Cascade &middot; 2. Constellation &middot; 3. Justified Field &middot; 4. Contour Wave &middot; 5. Letterpress &middot; 6. Calligram &middot; 7. Deconstruct &middot; 8. Butterfly Steps &middot; 9. Diagonal Cross &middot; 10. Perspective Echo &middot; 11. Arc Stream &middot; 12. Helix Coil &middot; 13. Stutter Matrix &middot; 14. Topography &middot; 15. Vortex Spiral.
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Footer Colophon Bar -->
+    <footer class="catalog-site-footer">
+      <div class="footer-top-grid">
+        <div>
+          <div class="footer-brand-title">ruangrobin</div>
+          <p class="footer-brand-desc">
+            A pure typographic publication platform for quiet thoughts, poems, and monographs in A4 formats.
+          </p>
+        </div>
+        <div>
+          <div class="footer-col-head">Formats</div>
+          <ul class="footer-link-list">
+            <li>True ISO 216 A4 (210/297)</li>
+            <li>Archival Cream (#faf6ee)</li>
+            <li>Deep Carbon Ink (#111418)</li>
+            <li>Multi-page PDF Editions</li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-head">Typography</div>
+          <ul class="footer-link-list">
+            <li>Michelangelus (Single Font)</li>
+            <li>Zero Decorative Frames</li>
+            <li>Vector Arc &amp; Contour Streams</li>
+            <li>Spatial Anti-Overflow Physics</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom-copy">
+        <span>&copy; 2026 ruangrobin. All rights reserved.</span>
+        <span>A4 publication system.</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Passcode Modal -->
+  <div id="passcode-modal" class="passcode-modal-wrap">
+    <div class="passcode-modal-card">
+      <div class="passcode-modal-title">
+        <span>AUTHENTICATE (🔒)</span>
+        <button id="btn-close-passcode" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--c-ink);">&times;</button>
+      </div>
+      <p style="font-size: 0.8125rem; color: var(--c-ink-muted); line-height: 1.6;">
+        Writing and managing editions is protected. Enter passcode to proceed:
+      </p>
+      <input type="password" id="input-passcode" class="passcode-input" placeholder="passcode..." autocomplete="off">
+      <div style="font-size: 0.6875rem; color: var(--c-blue); font-style: italic;">
+        Default key: <strong>robin</strong>
+      </div>
+      <button id="btn-submit-passcode" class="btn-primary-action" style="width: 100%;">Unlock &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Interactive Cover Crop & Zoom Modal -->
+  <div id="cover-crop-modal" class="modal-backdrop-wrap" style="display: none;">
+    <div class="modal-sheet-card" style="max-width: 540px; width: 92%; max-height: 90vh; display: flex; flex-direction: column;">
+      <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.75rem; border-bottom: 1px solid var(--c-border);">
+        <div>
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0; color: var(--c-ink);">Adjust Cover Photo (A4 Ratio)</h3>
+          <p style="font-size: 0.6875rem; color: var(--c-ink-muted); margin-top: 0.15rem;">Drag canvas to pan image, slider to zoom. Cropped to 210 &times; 297.</p>
+        </div>
+        <button id="btn-close-crop-modal" class="btn-icon-sm" style="font-size: 1.2rem; line-height: 1;">&times;</button>
+      </div>
+
+      <div style="padding: 1rem 0; display: flex; flex-direction: column; align-items: center; flex: 1; overflow-y: auto;">
+        <!-- A4 Crop Viewport Container -->
+        <div id="crop-viewport-box" class="crop-viewport-box">
+          <canvas id="crop-preview-canvas" width="420" height="594" style="width: 100%; height: 100%; display: block;"></canvas>
+          <div style="position: absolute; inset: 0; pointer-events: none; border: 1px dashed rgba(255,255,255,0.4);"></div>
+        </div>
+
+        <!-- Controls: Zoom and Pan -->
+        <div style="width: 100%; max-width: 360px; margin-top: 1rem; display: flex; flex-direction: column; gap: 0.65rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.6875rem; font-weight: 700;">
+            <span>Zoom Multiplier:</span>
+            <span id="crop-zoom-label" style="color: var(--c-blue);">1.0x</span>
+          </div>
+          <input type="range" id="crop-zoom-slider" min="1" max="4" step="0.05" value="1" style="width: 100%; accent-color: var(--c-blue);">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
+            <button type="button" id="btn-crop-reset" class="pill-action-btn" style="flex: 1; font-size: 0.6875rem; padding: 0.35rem 0.5rem;">↺ Center Image</button>
+            <button type="button" id="btn-crop-rotate" class="pill-action-btn" style="flex: 1; font-size: 0.6875rem; padding: 0.35rem 0.5rem;">↷ Rotate 90°</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; justify-content: flex-end; padding-top: 0.75rem; border-top: 1px solid var(--c-border);">
+        <button type="button" id="btn-cancel-crop" class="pill-action-btn" style="padding: 0.45rem 1rem;">Cancel</button>
+        <button type="button" id="btn-apply-crop" class="btn-primary-action" style="padding: 0.45rem 1.25rem;">Apply to Book Cover &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reader Chapter / Bab TOC Modal -->
+  <div id="reader-toc-modal" class="modal-backdrop-wrap" style="display: none;">
+    <div class="modal-sheet-card" style="max-width: 520px; width: 92%; max-height: 85vh; display: flex; flex-direction: column;">
+      <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 0.75rem; border-bottom: 1px solid var(--c-border);">
+        <div>
+          <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0; color: var(--c-ink);" id="toc-modal-edition-title">Table of Contents</h3>
+          <p style="font-size: 0.6875rem; color: var(--c-ink-muted); margin-top: 0.15rem;">Select a chapter or slide to jump directly.</p>
+        </div>
+        <button id="btn-close-reader-toc" class="btn-icon-sm" style="font-size: 1.2rem; line-height: 1;">&times;</button>
+      </div>
+
+      <div id="reader-toc-list-container" style="flex: 1; overflow-y: auto; padding: 1rem 0; display: flex; flex-direction: column; gap: 1rem;">
+        <!-- Populated by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-notify" class="toast-pill-notification"></div>
+
+  <!-- Modular Scripts Architecture (No Hardcoding) -->
+  <script src="jspdf.umd.min.js"></script>
+  <script src="series/template-fields.js"></script>
+  <script src="series/lorem-specimen.js"></script>
+  <script src="series/entropy-cosmos.js"></script>
+  <script src="series/river-departure.js"></script>
+  <script src="series/registry.js"></script>
+  <script src="templates/registry.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
