@@ -440,7 +440,7 @@ I brew tea beneath **winter's dark robe**.
 
 With dried driftwood, I build a raft
 To capsize alone in the {quiet harbor}.`,
-        pressEmblem: '❖',
+        pressEmblem: '*',
         publicationYear: '2026',
         stanzaAlignment: 'center'
       }

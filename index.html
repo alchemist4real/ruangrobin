@@ -6,7 +6,7 @@
   <title>ruangrobin — Pure Typographic A4 Monograph Platform</title>
   <meta name="description" content="A curated collection of quiet poems, notes, and visual monographs in A4 publication formats.">
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%230018f0'/><text x='50' y='63' font-size='38' font-family='Michelangelus' font-weight='bold' fill='white' text-anchor='middle' letter-spacing='-2'>r.r.</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
 <body>
 
@@ -42,7 +42,7 @@
           <button id="search-clear-btn" class="search-clear-btn" style="display: none;">&times;</button>
         </div>
 
-        <button class="btn-top-auth" id="btn-top-auth">Tulis (🔒)</button>
+        <button class="btn-top-auth" id="btn-top-auth">Tulis</button>
       </div>
 
     </header>
@@ -89,8 +89,8 @@
           </div>
 
           <div style="display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
-            <button class="pill-action-btn" id="btn-reader-toc">📑 Bab / Index</button>
-            <button class="pill-action-btn" id="btn-reader-pdf">📥 E-Book (PDF)</button>
+            <button class="pill-action-btn" id="btn-reader-toc">Bab / Index</button>
+            <button class="pill-action-btn" id="btn-reader-pdf">E-Book (PDF)</button>
             <button class="pill-action-btn" id="btn-copy-poem">Copy Text</button>
             <button class="pill-action-btn" id="btn-download-poem">Export A4</button>
           </div>
@@ -130,15 +130,15 @@
           
           <div class="composer-title-bar">
             <span>COMPOSE &amp; MANAGE</span>
-            <button class="pill-action-btn" id="btn-lock-tulis" style="padding: 0.2rem 0.6rem; font-size: 0.6875rem;">Lock (🔒)</button>
+            <button class="pill-action-btn" id="btn-lock-tulis" style="padding: 0.2rem 0.6rem; font-size: 0.6875rem;">Lock</button>
           </div>
 
           <!-- Studio Navigation Tabs -->
           <div class="composer-tabs-bar">
-            <button type="button" class="composer-tab-btn active" data-tab="tab-slide-content">✏️ Slide</button>
-            <button type="button" class="composer-tab-btn" data-tab="tab-slides-crud">📋 Slides (<span id="tab-slides-count">0</span>)</button>
-            <button type="button" class="composer-tab-btn" data-tab="tab-cover-series">🎨 Series &amp; Cover</button>
-            <button type="button" class="composer-tab-btn" data-tab="tab-chapters-crud">📑 Bab (<span id="tab-chapters-count">0</span>)</button>
+            <button type="button" class="composer-tab-btn active" data-tab="tab-slide-content">Slide</button>
+            <button type="button" class="composer-tab-btn" data-tab="tab-slides-crud">Slides (<span id="tab-slides-count">0</span>)</button>
+            <button type="button" class="composer-tab-btn" data-tab="tab-cover-series">Series &amp; Cover</button>
+            <button type="button" class="composer-tab-btn" data-tab="tab-chapters-crud">Bab (<span id="tab-chapters-count">0</span>)</button>
           </div>
 
           <!-- TAB 1: SLIDE CONTENT & TEMPLATE -->
@@ -289,12 +289,12 @@ Use {accent} for electric colored terms."></textarea>
 
               <div style="display: flex; gap: 0.4rem; align-items: center; margin-top: 0.35rem;">
                 <label for="cover-photo-file-input" class="pill-action-btn" style="cursor: pointer; flex: 1; text-align: center; padding: 0.4rem; font-size: 0.6875rem;">
-                  📷 Upload Photo...
+                  Upload Photo
                 </label>
                 <input type="file" id="cover-photo-file-input" accept="image/*" style="display: none;">
                 
                 <button type="button" id="btn-open-crop-modal" class="pill-action-btn" style="display: none; padding: 0.4rem 0.6rem; font-size: 0.6875rem;">
-                  🔍 Adjust Crop &amp; Zoom
+                  Adjust Crop &amp; Zoom
                 </button>
               </div>
 
@@ -431,7 +431,7 @@ Use {accent} for electric colored terms."></textarea>
   <div id="passcode-modal" class="passcode-modal-wrap">
     <div class="passcode-modal-card">
       <div class="passcode-modal-title">
-        <span>AUTHENTICATE (🔒)</span>
+        <span>AUTHENTICATE</span>
         <button id="btn-close-passcode" style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--c-ink);">&times;</button>
       </div>
       <p style="font-size: 0.8125rem; color: var(--c-ink-muted); line-height: 1.6;">
@@ -472,8 +472,8 @@ Use {accent} for electric colored terms."></textarea>
           <input type="range" id="crop-zoom-slider" min="1" max="4" step="0.05" value="1" style="width: 100%; accent-color: var(--c-blue);">
           
           <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-top: 0.25rem;">
-            <button type="button" id="btn-crop-reset" class="pill-action-btn" style="flex: 1; font-size: 0.6875rem; padding: 0.35rem 0.5rem;">↺ Center Image</button>
-            <button type="button" id="btn-crop-rotate" class="pill-action-btn" style="flex: 1; font-size: 0.6875rem; padding: 0.35rem 0.5rem;">↷ Rotate 90°</button>
+            <button type="button" id="btn-crop-reset" class="pill-action-btn" style="flex: 1; font-size: 0.6875rem; padding: 0.35rem 0.5rem;">Center Image</button>
+            <button type="button" id="btn-crop-rotate" class="pill-action-btn" style="flex: 1; font-size: 0.6875rem; padding: 0.35rem 0.5rem;">Rotate 90deg</button>
           </div>
         </div>
       </div>
@@ -507,6 +507,7 @@ Use {accent} for electric colored terms."></textarea>
 
   <!-- Modular Scripts Architecture (No Hardcoding) -->
   <script src="jspdf.umd.min.js"></script>
+  <script src="series/smart-palette.js"></script>
   <script src="series/template-fields.js"></script>
   <script src="series/lorem-specimen.js"></script>
   <script src="series/entropy-cosmos.js"></script>

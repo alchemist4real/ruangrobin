@@ -647,9 +647,9 @@ const TEMPLATE_FIELD_DEFINITIONS = {
         key: 'pressEmblem',
         label: 'Press Emblem / Vignette',
         type: 'text',
-        placeholder: '❖',
-        help: 'Typographic printer\'s mark (e.g., ❖, §, · · ·).',
-        defaultValue: '❖'
+        placeholder: '*',
+        help: 'Typographic printer\'s mark (e.g., *, §, · · ·).',
+        defaultValue: '*'
       },
       {
         key: 'publicationYear',

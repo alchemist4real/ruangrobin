@@ -376,7 +376,7 @@ const TEMPLATE_ENGINES = {
     name: '5. Letterpress (Classical Stanza)',
     renderHTML: (page, theme, spread = 50) => {
       const stanzas = (page.body || '').split(/\n\s*\n/);
-      const emblem = (page.specificParams && page.specificParams.pressEmblem) || '❖';
+      const emblem = (page.specificParams && page.specificParams.pressEmblem) || '*';
       const year = (page.specificParams && page.specificParams.publicationYear) || '2026';
 
       const stanzasHtml = stanzas.map(st => {
@@ -404,7 +404,7 @@ const TEMPLATE_ENGINES = {
       ctx.textAlign = 'center';
       ctx.fillStyle = theme.accent;
       ctx.font = '700 36px "Michelangelus"';
-      ctx.fillText((page.specificParams && page.specificParams.pressEmblem) || '❖', w / 2, 380);
+      ctx.fillText((page.specificParams && page.specificParams.pressEmblem) || '*', w / 2, 380);
 
       ctx.fillStyle = theme.ink;
       ctx.font = '700 44px "Michelangelus"';

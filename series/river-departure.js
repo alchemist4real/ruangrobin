@@ -78,7 +78,7 @@ I brew tea beneath winter's robe.
 With dried wood, I build a {raft}
 to capsize alone in the harbor.`,
       specificParams: {
-        pressEmblem: '❖',
+        pressEmblem: '*',
         publicationYear: '2026'
       }
     }

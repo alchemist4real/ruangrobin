@@ -126,8 +126,8 @@ html, body {
 }
 
 .nav-brand-group:hover .nav-brand-logo {
-  transform: rotate(18deg) scale(1.1);
-  box-shadow: 0 4px 16px rgba(0, 24, 240, 0.42);
+  transform: scale(1.03);
+  box-shadow: 0 4px 14px rgba(0, 24, 240, 0.25);
 }
 
 @keyframes logoBreathing {

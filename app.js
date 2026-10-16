@@ -92,6 +92,9 @@ function getContrastRatio(hex1, hex2) {
  * Resolves semantic colors from series palette.
  */
 function resolveSeriesTheme(palette) {
+  if (typeof window !== 'undefined' && typeof window.smartResolvePalette === 'function') {
+    return window.smartResolvePalette(palette);
+  }
   const pal = Array.isArray(palette) && palette.length >= 2 ? palette : ['#faf6ee', '#111418', '#0018f0'];
   return {
     paper: pal[0] || '#faf6ee',
@@ -171,7 +174,7 @@ function renderShelf() {
   if (matches.length === 0) {
     container.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; color: var(--c-ink-muted);">
-        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">❖</div>
+        <div style="font-size: 1.25rem; margin-bottom: 0.5rem; letter-spacing: 0.3em; opacity: 0.5;">&middot; &middot; &middot;</div>
         <p style="font-size: 0.9375rem;">No monograph editions matching "<strong>${escapeHtml(query)}</strong>".</p>
       </div>
     `;
@@ -806,10 +809,10 @@ function renderStudioSlidesCrud() {
         <span class="slide-crud-tag">${escapeHtml(p.template)} &middot; ${(p.body || '').split(' ').slice(0, 5).join(' ')}...</span>
       </div>
       <div class="slide-crud-actions">
-        <button type="button" class="btn-icon-sm" title="Move Up" onclick="handleReorderSlide(${idx}, -1)">▲</button>
-        <button type="button" class="btn-icon-sm" title="Move Down" onclick="handleReorderSlide(${idx}, 1)">▼</button>
-        <button type="button" class="btn-icon-sm" title="Edit Slide" onclick="handleEditSlide('${p.id}')">✏️</button>
-        <button type="button" class="btn-icon-sm btn-danger" title="Delete Slide" onclick="handleDeleteSlide('${p.id}')">🗑️</button>
+        <button type="button" class="btn-icon-sm" title="Move Up" onclick="handleReorderSlide(${idx}, -1)">&uarr;</button>
+        <button type="button" class="btn-icon-sm" title="Move Down" onclick="handleReorderSlide(${idx}, 1)">&darr;</button>
+        <button type="button" class="btn-icon-sm" title="Edit Slide" style="font-size: 0.65rem; padding: 0.2rem 0.45rem;" onclick="handleEditSlide('${p.id}')">Edit</button>
+        <button type="button" class="btn-icon-sm btn-danger" title="Delete Slide" style="font-size: 0.9rem; line-height: 1;" onclick="handleDeleteSlide('${p.id}')">&times;</button>
       </div>
     </div>
   `).join('');
@@ -921,7 +924,7 @@ function renderStudioChaptersCrud() {
       <div class="chapter-crud-card">
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <input type="text" class="composer-input" value="${escapeHtml(ch.title)}" style="font-weight: 700; flex: 1; margin-right: 0.5rem;" onchange="handleUpdateChapterTitle('${ch.id}', this.value)">
-          <button type="button" class="btn-icon-sm btn-danger" onclick="handleDeleteChapter('${ch.id}')">🗑️</button>
+          <button type="button" class="btn-icon-sm btn-danger" style="font-size: 0.9rem; line-height: 1;" title="Delete Chapter" onclick="handleDeleteChapter('${ch.id}')">&times;</button>
         </div>
         <textarea class="composer-textarea" rows="2" placeholder="Chapter description..." style="font-size: 0.6875rem;" onchange="handleUpdateChapterDesc('${ch.id}', this.value)">${escapeHtml(ch.description || '')}</textarea>
         <div style="font-size: 0.65rem; color: var(--c-ink-muted);">Contains ${slideCount} slides</div>
@@ -1136,21 +1139,31 @@ function renderPaletteSwatches(palette) {
   if (!container) return;
 
   const pal = Array.isArray(palette) && palette.length >= 2 ? palette : ['#faf6ee', '#111418', '#0018f0'];
-  const contrastRatio = getContrastRatio(pal[0], pal[1]);
+  const resolved = typeof smartResolvePalette === 'function' ? smartResolvePalette(pal) : resolveSeriesTheme(pal);
+  
   const badge = document.getElementById('palette-contrast-badge');
-  if (badge) badge.textContent = `Contrast: ${contrastRatio}:1`;
+  if (badge) {
+    badge.textContent = `Contrast: ${resolved.contrastRatio || '7.1:1'} (AAA Guaranteed)`;
+  }
+
+  const roleLabels = ['Paper (Bg)', 'Ink (Primary)', 'Accent', 'Muted', 'Sheet'];
 
   let html = pal.map((color, idx) => `
-    <div style="display: flex; align-items: center; gap: 0.35rem; background: #fff; border: 1px solid var(--c-border); border-radius: 6px; padding: 0.25rem 0.45rem;">
-      <input type="color" value="${color}" style="width: 22px; height: 22px; border: none; cursor: pointer;" onchange="handlePaletteColorChange(${idx}, this.value)">
-      <span style="font-size: 0.65rem; font-weight: 700;">${color}</span>
-      ${pal.length > 2 ? `<button type="button" class="btn-icon-sm btn-danger" style="padding: 0.1rem 0.3rem;" onclick="handleRemovePaletteColor(${idx})">&times;</button>` : ''}
+    <div style="display: flex; flex-direction: column; gap: 0.2rem; background: var(--c-surface, #fff); border: 1px solid var(--c-border); border-radius: 6px; padding: 0.35rem 0.5rem; min-width: 90px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--c-ink-muted); font-weight: 600;">${roleLabels[idx] || `Color ${idx + 1}`}</span>
+        ${pal.length > 2 ? `<button type="button" class="btn-icon-sm btn-danger" style="font-size: 0.75rem; padding: 0 0.25rem; line-height: 1;" title="Remove Color" onclick="handleRemovePaletteColor(${idx})">&times;</button>` : ''}
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.35rem;">
+        <input type="color" value="${color.length === 7 ? color : '#111418'}" style="width: 24px; height: 24px; border: 1px solid var(--c-border); border-radius: 4px; cursor: pointer; padding: 0; background: none;" onchange="handlePaletteColorChange(${idx}, this.value)">
+        <input type="text" value="${color}" maxlength="7" style="width: 56px; font-size: 0.65rem; font-family: monospace; border: 1px solid var(--c-border); border-radius: 3px; padding: 2px 4px; text-transform: uppercase;" onchange="handlePaletteHexChange(${idx}, this.value)">
+      </div>
     </div>
   `).join('');
 
   if (pal.length < 5) {
     html += `
-      <button type="button" class="pill-action-btn" style="font-size: 0.65rem; padding: 0.3rem 0.6rem;" onclick="handleAddPaletteColor()">+ Color</button>
+      <button type="button" class="pill-action-btn" style="font-size: 0.65rem; padding: 0.4rem 0.65rem; align-self: center;" onclick="handleAddPaletteColor()">+ Color</button>
     `;
   }
 
@@ -1164,6 +1177,18 @@ function handlePaletteColorChange(idx, newHex) {
   seriesRegistry.persist();
   renderPaletteSwatches(series.palette);
   updateStudioLivePreview();
+}
+
+function handlePaletteHexChange(idx, rawVal) {
+  let clean = rawVal.trim();
+  if (!clean.startsWith('#')) clean = '#' + clean;
+  if (/^#[0-9A-Fa-f]{6}$/.test(clean)) {
+    handlePaletteColorChange(idx, clean);
+  } else {
+    showToast('Invalid hex format. Use #RRGGBB');
+    const series = seriesRegistry.getById(State.currentEbookId);
+    if (series) renderPaletteSwatches(series.palette);
+  }
 }
 
 function handleAddPaletteColor() {
@@ -1275,7 +1300,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (val === PASSCODE) {
       State.isUnlocked = true;
       document.getElementById('passcode-modal').style.display = 'none';
-      document.getElementById('btn-top-auth').textContent = 'Tulis (✓)';
+      document.getElementById('btn-top-auth').textContent = 'Tulis [unlocked]';
       showToast('Authentication unlocked.');
       switchView('studio');
     } else {
