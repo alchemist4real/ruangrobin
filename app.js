@@ -113,6 +113,126 @@ function resolveSeriesTheme(palette) {
   };
 }
 
+/**
+ * Asynchronously loads an image and ensures decoding before canvas drawing.
+ */
+function loadImgAsync(src) {
+  return new Promise((resolve, reject) => {
+    if (!src) return reject(new Error('No image source provided'));
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = (e) => reject(e);
+    img.src = src;
+    if (img.complete && img.naturalWidth > 0) {
+      resolve(img);
+    }
+  });
+}
+
+/**
+ * Unified HTML Cover Plate renderer.
+ * Produces identical monograph cover architecture across Shelf, Reader, and Studio.
+ * Mode: 'shelf' | 'reader' | 'studio'
+ */
+function renderCoverHTML(series, theme, mode = 'reader') {
+  if (!series) return '';
+  const isShelf = mode === 'shelf';
+  const coverTpl = series.coverTemplate || 'cascade';
+  const dummyPage = (series.pages && series.pages[0]) ? series.pages[0] : {
+    title: series.title || 'Monograph Archive',
+    author: 'ruangrobin',
+    body: series.subtitle || 'words as visual architecture',
+    spread: 50
+  };
+
+  if (series.coverImage) {
+    if (isShelf) {
+      return `
+        <div style="position: relative; width: 100%; height: 100%; overflow: hidden; background: #111418;">
+          <img src="${series.coverImage}" class="cover-photo-img" style="width: 100%; height: 100%; object-fit: cover;" alt="${escapeHtml(series.title || '')}">
+          <div class="cover-photo-overlay" style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.85) 100%);"></div>
+          <div style="position: absolute; bottom: 1rem; left: 1.25rem; right: 1.25rem; z-index: 2; color: #ffffff;">
+            <div style="font-size: 0.625rem; letter-spacing: 0.15em; font-weight: 700; color: ${theme.accent}; margin-bottom: 0.2rem;">${escapeHtml((series.volNumber || 'EDITION').toUpperCase())}</div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; margin: 0.15rem 0; line-height: 1.2; text-shadow: 0 2px 8px rgba(0,0,0,0.5);">${escapeHtml(series.title || 'Untitled Monograph')}</h3>
+            <div style="font-size: 0.6875rem; opacity: 0.85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(series.subtitle || '')}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Reader & Studio Full A4 Plate
+    return `
+      <div style="position: relative; width: 100%; height: 100%; overflow: hidden; background: #111418; border-radius: 4px;">
+        <img src="${series.coverImage}" class="cover-photo-img" style="width: 100%; height: 100%; object-fit: cover;" alt="${escapeHtml(series.title || '')}">
+        <div class="cover-photo-overlay" style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.88) 100%);"></div>
+        <div style="position: absolute; bottom: 2.5rem; left: 2.5rem; right: 2.5rem; z-index: 2; color: #ffffff;">
+          <div style="font-size: 0.8125rem; letter-spacing: 0.2em; font-weight: 700; color: ${theme.accent}; margin-bottom: 0.4rem;">${escapeHtml((series.volNumber || 'EDITION').toUpperCase())}</div>
+          <h1 style="font-size: 2.2rem; font-weight: 700; margin: 0.25rem 0; line-height: 1.15; text-shadow: 0 2px 12px rgba(0,0,0,0.6);">${escapeHtml(series.title || 'Untitled Monograph')}</h1>
+          <div style="font-size: 0.9375rem; opacity: 0.9; margin-bottom: 1.25rem;">${escapeHtml(series.subtitle || '')}</div>
+          <div style="font-size: 0.6875rem; letter-spacing: 0.12em; opacity: 0.75; border-top: 1px solid rgba(255,255,255,0.25); padding-top: 0.65rem;">
+            ruangrobin &middot; ${escapeHtml(series.editionDate || '2026')} &middot; ${escapeHtml(series.colophon || 'MONOGRAPH ARCHIVE')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Pure Typographic Monograph Cover Plate
+  const motifHtml = templateRegistry.renderHTML(coverTpl, dummyPage, theme, 50);
+
+  if (isShelf) {
+    return `
+      <div style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; padding: 1.25rem; box-sizing: border-box; background: ${theme.paper}; color: ${theme.ink}; overflow: hidden;">
+        <!-- Top Folio -->
+        <div style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.5625rem; letter-spacing: 0.15em; font-weight: 700; color: ${theme.muted}; border-bottom: 1px solid ${theme.border}; padding-bottom: 0.4rem; margin-bottom: 0.5rem;">
+          <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: ${theme.accent}; flex-shrink: 0;"></span>
+          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">ruangrobin &middot; PUBLICATION SERIES</span>
+        </div>
+        <!-- Center Motif -->
+        <div style="flex: 1; overflow: hidden; transform: scale(0.92); transform-origin: top center; pointer-events: none; display: flex; align-items: center; justify-content: center;">
+          <div style="width: 100%; height: 100%;">
+            ${motifHtml}
+          </div>
+        </div>
+        <!-- Bottom Masthead -->
+        <div style="margin-top: auto; border-top: 1px solid ${theme.border}; padding-top: 0.5rem;">
+          <div style="font-size: 0.5625rem; font-weight: 700; letter-spacing: 0.15em; color: ${theme.accent}; margin-bottom: 0.15rem;">${escapeHtml((series.volNumber || 'EDITION').toUpperCase())}</div>
+          <h3 style="font-size: 1.05rem; font-weight: 700; margin: 0.15rem 0; line-height: 1.2; color: ${theme.ink}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(series.title || 'Untitled Monograph')}</h3>
+          <div style="font-size: 0.625rem; color: ${theme.muted}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.35rem;">${escapeHtml(series.subtitle || '')}</div>
+          <div style="font-size: 0.5rem; letter-spacing: 0.1em; color: ${theme.muted}; opacity: 0.8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">ruangrobin &middot; ${escapeHtml(series.editionDate || '2026')} &middot; ${escapeHtml(series.colophon || 'MONOGRAPH ARCHIVE')}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Reader & Studio Pure Typographic Full A4 Plate
+  return `
+    <div style="position: relative; width: 100%; height: 100%; display: flex; flex-direction: column; padding: 2.25rem; box-sizing: border-box; background: ${theme.paper}; color: ${theme.ink}; overflow: hidden; border-radius: 4px;">
+      <!-- Top Folio -->
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.6875rem; letter-spacing: 0.18em; font-weight: 700; color: ${theme.muted}; border-bottom: 1px solid ${theme.border}; padding-bottom: 0.65rem; margin-bottom: 1.25rem;">
+        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: ${theme.accent}; flex-shrink: 0;"></span>
+        <span>ruangrobin &middot; PUBLICATION SERIES</span>
+      </div>
+      <!-- Center Motif -->
+      <div style="flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+        <div style="width: 100%; height: 100%;">
+          ${motifHtml}
+        </div>
+      </div>
+      <!-- Bottom Masthead -->
+      <div style="margin-top: auto; border-top: 1.5px solid ${theme.border}; padding-top: 1.25rem;">
+        <div style="font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.2em; color: ${theme.accent}; margin-bottom: 0.35rem;">${escapeHtml((series.volNumber || 'EDITION').toUpperCase())}</div>
+        <h1 style="font-size: 2.2rem; font-weight: 700; margin: 0.25rem 0; line-height: 1.15; color: ${theme.ink};">${escapeHtml(series.title || 'Untitled Monograph')}</h1>
+        <div style="font-size: 0.9375rem; color: ${theme.muted}; margin-bottom: 0.85rem;">${escapeHtml(series.subtitle || '')}</div>
+        <div style="font-size: 0.6875rem; letter-spacing: 0.12em; color: ${theme.muted}; opacity: 0.8; border-top: 1px solid ${theme.border}; padding-top: 0.6rem;">
+          ruangrobin &middot; ${escapeHtml(series.editionDate || '2026')} &middot; ${escapeHtml(series.colophon || 'MONOGRAPH ARCHIVE')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // ========================================================
 // 3. NAVIGATION & VIEW SWITCHING
 // ========================================================
@@ -192,33 +312,12 @@ function renderShelf() {
     const theme = resolveSeriesTheme(series.palette);
     const pageCount = (series.pages || []).length;
     const chapCount = (series.chapters || []).length;
-    const firstPage = (series.pages && series.pages[0]) ? series.pages[0] : null;
 
-    // Cover Artwork / Photo vs Typographic motif preview
-    let coverPreviewHtml = '';
-    if (series.coverImage) {
-      coverPreviewHtml = `
-        <img src="${series.coverImage}" class="cover-photo-img" alt="${escapeHtml(series.title)}">
-        <div class="cover-photo-overlay"></div>
-        <div style="position: absolute; bottom: 1.25rem; left: 1.25rem; right: 1.25rem; z-index: 2; color: #fff;">
-          <div style="font-size: 0.625rem; letter-spacing: 0.15em; font-weight: 700; opacity: 0.9;">${escapeHtml(series.volNumber)}</div>
-          <h3 style="font-size: 1.2rem; font-weight: 700; margin: 0.2rem 0; text-shadow: 0 2px 8px rgba(0,0,0,0.4);">${escapeHtml(series.title)}</h3>
-          <div style="font-size: 0.6875rem; opacity: 0.85;">${escapeHtml(series.subtitle || '')}</div>
-        </div>
-      `;
-    } else {
-      // Pure Typographic Monograph Cover Card
-      const tpl = series.coverTemplate || (firstPage ? firstPage.template : 'cascade');
-      const motifPreview = templateRegistry.renderHTML(tpl, firstPage || { title: series.title, body: series.subtitle }, theme, 50);
-      coverPreviewHtml = `
-        <div style="width: 100%; height: 100%; overflow: hidden; transform: scale(0.92); transform-origin: top center; pointer-events: none;">
-          ${motifPreview}
-        </div>
-      `;
-    }
+    // Unified Monograph Cover Plate Preview
+    const coverPreviewHtml = renderCoverHTML(series, theme, 'shelf');
 
     return `
-      <article class="book-shelf-card" onclick="openEbookReader('${series.id}')">
+      <article class="book-shelf-card" onclick="openEbookReader('${series.id}', -1)">
         <div class="book-card-a4-sheet" style="background: ${theme.paper};">
           ${coverPreviewHtml}
         </div>
@@ -239,14 +338,15 @@ function renderShelf() {
 // 5. READER VIEW RENDERING & CONTROLS
 // ========================================================
 
-function openEbookReader(seriesId, targetPageIndex = 0) {
+function openEbookReader(seriesId, targetPageIndex = -1) {
   const series = seriesRegistry.getById(seriesId);
   if (!series) {
     showToast('Edition not found.');
     return;
   }
   State.currentEbookId = seriesId;
-  State.currentPageIndex = Math.max(0, Math.min(targetPageIndex, (series.pages || []).length - 1));
+  const maxIdx = Math.max(0, (series.pages || []).length - 1);
+  State.currentPageIndex = Math.max(-1, Math.min(targetPageIndex, maxIdx));
   switchView('reader');
 }
 
@@ -261,7 +361,7 @@ function renderReader() {
   const theme = resolveSeriesTheme(series.palette);
   const totalPages = pages.length;
 
-  if (totalPages === 0) {
+  if (totalPages === 0 && !series.coverImage) {
     document.getElementById('reader-poem-stage').innerHTML = `
       <div style="text-align: center; padding: 4rem 1rem; color: var(--c-ink-muted);">
         <p>This edition has no pages yet. Use Studio to write verses.</p>
@@ -270,11 +370,9 @@ function renderReader() {
     return;
   }
 
-  // Clamped page index
+  // Clamped page index (-1 is Cover Plate, 0..totalPages-1 are slides)
   if (State.currentPageIndex >= totalPages) State.currentPageIndex = totalPages - 1;
-  if (State.currentPageIndex < 0) State.currentPageIndex = 0;
-
-  const curPage = pages[State.currentPageIndex];
+  if (State.currentPageIndex < -1) State.currentPageIndex = -1;
 
   // Update Masthead
   const badge = document.getElementById('reader-ebook-badge');
@@ -284,43 +382,57 @@ function renderReader() {
 
   if (badge) badge.textContent = series.volNumber;
   if (titleBar) titleBar.textContent = series.title;
-  if (pageIndicator) pageIndicator.textContent = `Page ${State.currentPageIndex + 1} of ${totalPages}`;
-  if (poemTitleIndicator) poemTitleIndicator.textContent = curPage.title || 'Untitled';
 
-  // Render Page Content inside A4 physical container
   const stage = document.getElementById('reader-poem-stage');
-  if (stage) {
-    stage.style.background = theme.paper;
-    stage.style.color = theme.ink;
 
-    // Folio Top Header
-    const folioHeader = `
-      <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 0.6875rem; color: ${theme.muted}; border-bottom: 1px solid ${theme.border}; padding-bottom: 0.65rem; margin-bottom: 1.5rem; letter-spacing: 0.08em;">
-        <span>ruangrobin &middot; ${escapeHtml(series.title.toUpperCase())}</span>
-        <span>${escapeHtml(series.volNumber)} &middot; PAGE ${State.currentPageIndex + 1}</span>
-      </div>
-    `;
+  if (State.currentPageIndex === -1) {
+    if (pageIndicator) pageIndicator.textContent = `Cover Plate · Frontispiece`;
+    if (poemTitleIndicator) poemTitleIndicator.textContent = `Cover: ${series.title}`;
 
-    // Active Template Rendered HTML
-    const templateHtml = templateRegistry.renderHTML(curPage.template, curPage, theme, curPage.spread || 50);
+    if (stage) {
+      stage.style.background = series.coverImage ? '#111418' : theme.paper;
+      stage.style.color = series.coverImage ? '#ffffff' : theme.ink;
+      stage.innerHTML = renderCoverHTML(series, theme, 'reader');
+    }
+  } else {
+    const curPage = pages[State.currentPageIndex];
+    if (pageIndicator) pageIndicator.textContent = `Page ${State.currentPageIndex + 1} of ${totalPages}`;
+    if (poemTitleIndicator) poemTitleIndicator.textContent = curPage.title || 'Untitled';
 
-    // Folio Foot
-    const folioFoot = `
-      <div style="margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; font-size: 0.625rem; color: ${theme.muted}; border-top: 1px solid ${theme.border}; padding-top: 0.65rem; letter-spacing: 0.1em;">
-        <span>FORMAT: ${(curPage.template || 'cascade').toUpperCase()}</span>
-        <span>${escapeHtml(series.editionDate || '2026')}</span>
-      </div>
-    `;
+    // Render Page Content inside A4 physical container
+    if (stage) {
+      stage.style.background = theme.paper;
+      stage.style.color = theme.ink;
 
-    stage.innerHTML = `
-      <div style="height: 100%; display: flex; flex-direction: column;">
-        ${folioHeader}
-        <div style="flex: 1; overflow: hidden;">
-          ${templateHtml}
+      // Folio Top Header
+      const folioHeader = `
+        <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 0.6875rem; color: ${theme.muted}; border-bottom: 1px solid ${theme.border}; padding-bottom: 0.65rem; margin-bottom: 1.5rem; letter-spacing: 0.08em;">
+          <span>ruangrobin &middot; ${escapeHtml(series.title.toUpperCase())}</span>
+          <span>${escapeHtml(series.volNumber)} &middot; PAGE ${State.currentPageIndex + 1}</span>
         </div>
-        ${folioFoot}
-      </div>
-    `;
+      `;
+
+      // Active Template Rendered HTML
+      const templateHtml = templateRegistry.renderHTML(curPage.template, curPage, theme, curPage.spread || 50);
+
+      // Folio Foot
+      const folioFoot = `
+        <div style="margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; font-size: 0.625rem; color: ${theme.muted}; border-top: 1px solid ${theme.border}; padding-top: 0.65rem; letter-spacing: 0.1em;">
+          <span>FORMAT: ${(curPage.template || 'cascade').toUpperCase()}</span>
+          <span>${escapeHtml(series.editionDate || '2026')}</span>
+        </div>
+      `;
+
+      stage.innerHTML = `
+        <div style="height: 100%; display: flex; flex-direction: column;">
+          ${folioHeader}
+          <div style="flex: 1; overflow: hidden;">
+            ${templateHtml}
+          </div>
+          ${folioFoot}
+        </div>
+      `;
+    }
   }
 
   // Render bottom chapter pills
@@ -332,7 +444,14 @@ function renderReaderChapterShelf(series) {
   if (!shelf) return;
 
   const pages = series.pages || [];
-  shelf.innerHTML = pages.map((p, idx) => {
+  const isCoverActive = State.currentPageIndex === -1;
+  const coverPill = `
+    <button class="pill-action-btn ${isCoverActive ? 'active' : ''}" onclick="goToReaderPage(-1)" style="padding: 0.25rem 0.65rem; font-size: 0.6875rem; font-weight: 700; white-space: nowrap;">
+      Cover Plate
+    </button>
+  `;
+
+  const pagePills = pages.map((p, idx) => {
     const isActive = idx === State.currentPageIndex;
     return `
       <button class="pill-action-btn ${isActive ? 'active' : ''}" onclick="goToReaderPage(${idx})" style="padding: 0.25rem 0.65rem; font-size: 0.6875rem; white-space: nowrap;">
@@ -340,12 +459,14 @@ function renderReaderChapterShelf(series) {
       </button>
     `;
   }).join('');
+
+  shelf.innerHTML = coverPill + pagePills;
 }
 
 function goToReaderPage(pageIdx) {
   const series = seriesRegistry.getById(State.currentEbookId);
   if (!series || !series.pages) return;
-  State.currentPageIndex = Math.max(0, Math.min(pageIdx, series.pages.length - 1));
+  State.currentPageIndex = Math.max(-1, Math.min(pageIdx, series.pages.length - 1));
   renderReader();
 }
 
@@ -353,7 +474,7 @@ function flipPage(delta) {
   const series = seriesRegistry.getById(State.currentEbookId);
   if (!series || !series.pages) return;
   const newIdx = State.currentPageIndex + delta;
-  if (newIdx >= 0 && newIdx < series.pages.length) {
+  if (newIdx >= -1 && newIdx < series.pages.length) {
     State.currentPageIndex = newIdx;
     renderReader();
   }
@@ -374,15 +495,22 @@ function openReaderTocModal() {
   const chapters = series.chapters || [];
   const pages = series.pages || [];
 
+  const coverItemHtml = `
+    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.55rem 0.75rem; background: #ffffff; border: 1px solid var(--c-blue); border-radius: 6px; cursor: pointer; margin-bottom: 0.75rem;" onclick="goToReaderPage(-1); closeReaderTocModal();">
+      <span style="font-weight: 700; font-size: 0.8125rem; color: var(--c-blue);">0. Cover Plate &middot; Frontispiece</span>
+      <span style="font-size: 0.6875rem; color: var(--c-ink-muted);">Monograph Cover</span>
+    </div>
+  `;
+
   if (chapters.length === 0) {
-    listContainer.innerHTML = pages.map((p, idx) => `
+    listContainer.innerHTML = coverItemHtml + pages.map((p, idx) => `
       <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #fff; border: 1px solid var(--c-border); border-radius: 6px; cursor: pointer;" onclick="goToReaderPage(${idx}); closeReaderTocModal();">
         <span style="font-weight: 700; font-size: 0.8125rem;">${idx + 1}. ${escapeHtml(p.title)}</span>
         <span style="font-size: 0.6875rem; color: var(--c-ink-muted);">${escapeHtml(p.template)}</span>
       </div>
     `).join('');
   } else {
-    listContainer.innerHTML = chapters.map(ch => {
+    listContainer.innerHTML = coverItemHtml + chapters.map(ch => {
       const chPages = pages.filter(p => p.chapterId === ch.id);
       const pagesHtml = chPages.map(p => {
         const pageIdx = pages.findIndex(x => x.id === p.id);
@@ -464,14 +592,32 @@ function renderSlideToA4Canvas(canvas, page, series, pageNum, totalPages) {
 /**
  * Exports current reader page to PNG.
  */
-function exportCurrentPageToA4Png() {
+async function exportCurrentPageToA4Png() {
   const series = seriesRegistry.getById(State.currentEbookId);
-  if (!series || !series.pages || series.pages.length === 0) return;
+  if (!series) return;
+
+  const canvas = document.createElement('canvas');
+
+  if (State.currentPageIndex === -1) {
+    showToast('Generating 300 DPI A4 Cover PNG...');
+    await renderCoverToA4Canvas(canvas, series);
+    try {
+      const link = document.createElement('a');
+      link.download = `ruangrobin-${series.id}-cover.png`;
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+      showToast('A4 Monograph Cover exported successfully.');
+    } catch (e) {
+      console.error(e);
+      showToast('Export failed.');
+    }
+    return;
+  }
+
+  if (!series.pages || series.pages.length === 0) return;
   const curPage = series.pages[State.currentPageIndex];
 
   showToast('Generating 300 DPI A4 Monograph PNG...');
-
-  const canvas = document.createElement('canvas');
   renderSlideToA4Canvas(canvas, curPage, series, State.currentPageIndex + 1, series.pages.length);
 
   try {
@@ -489,7 +635,7 @@ function exportCurrentPageToA4Png() {
 /**
  * Draws the 300 DPI A4 Cover Plate (2480 x 3508).
  */
-function renderCoverToA4Canvas(canvas, series) {
+async function renderCoverToA4Canvas(canvas, series) {
   canvas.width = 2480;
   canvas.height = 3508;
   const ctx = canvas.getContext('2d');
@@ -500,18 +646,10 @@ function renderCoverToA4Canvas(canvas, series) {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   if (series.coverImage) {
-    const img = new Image();
-    img.src = series.coverImage;
-    if (img.complete && img.naturalWidth > 0) {
-      const settings = series.coverSettings || { zoom: 1, offsetX: 0, offsetY: 0, rotation: 0 };
-      ctx.save();
-      ctx.translate(canvas.width / 2 + (settings.offsetX || 0) * 2.5, canvas.height / 2 + (settings.offsetY || 0) * 2.5);
-      if (settings.rotation) ctx.rotate((settings.rotation * Math.PI) / 180);
-      const scale = (settings.zoom || 1) * Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
-      const dw = img.naturalWidth * scale;
-      const dh = img.naturalHeight * scale;
-      ctx.drawImage(img, -dw / 2, -dh / 2, dw, dh);
-      ctx.restore();
+    try {
+      const img = await loadImgAsync(series.coverImage);
+      // Clean 1:1 draw since series.coverImage is already cropped to A4 ratio
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       const grad = ctx.createLinearGradient(0, canvas.height * 0.45, 0, canvas.height);
       grad.addColorStop(0, 'rgba(0,0,0,0)');
@@ -533,6 +671,8 @@ function renderCoverToA4Canvas(canvas, series) {
       ctx.font = '700 24px "Michelangelus"';
       ctx.fillText(`ruangrobin  ·  ${series.editionDate || '2026'}  ·  ${series.colophon || 'MONOGRAPH'}`, 200, canvas.height - 180);
       return;
+    } catch (e) {
+      console.warn('Cover image async load failed, fallback to typographic cover:', e);
     }
   }
 
@@ -599,7 +739,7 @@ async function exportCompleteEbookToPDF(seriesId) {
   const total = pages.length;
 
   // 1. Cover Plate
-  renderCoverToA4Canvas(canvas, series);
+  await renderCoverToA4Canvas(canvas, series);
   const coverImgData = canvas.toDataURL('image/jpeg', 0.94);
   doc.addImage(coverImgData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
 
@@ -826,34 +966,20 @@ function updateStudioLivePreview() {
   const theme = resolveSeriesTheme(series.palette);
 
   if (State.studioPreviewMode === 'cover') {
-    // Render Book Cover Preview
-    if (series.coverImage) {
-      box.innerHTML = `
-        <div style="position: relative; width: 100%; height: 100%; border-radius: 6px; overflow: hidden; background: #000;">
-          <img src="${series.coverImage}" class="cover-photo-img" alt="Cover">
-          <div class="cover-photo-overlay"></div>
-          <div style="position: absolute; bottom: 2rem; left: 2rem; right: 2rem; z-index: 2; color: #fff;">
-            <div style="font-size: 0.75rem; letter-spacing: 0.15em; font-weight: 700;">${escapeHtml(series.volNumber)}</div>
-            <h1 style="font-size: 1.8rem; font-weight: 700; margin: 0.4rem 0;">${escapeHtml(series.title)}</h1>
-            <div style="font-size: 0.8125rem; opacity: 0.9;">${escapeHtml(series.subtitle || '')}</div>
-          </div>
-        </div>
-      `;
-    } else {
-      const coverTpl = document.getElementById('studio-cover-template-select')?.value || series.coverTemplate || 'cascade';
-      const dummyPage = {
-        title: series.title,
-        author: 'ruangrobin',
-        body: series.subtitle || 'words as visual architecture',
-        spread: 50
-      };
-      const coverHtml = templateRegistry.renderHTML(coverTpl, dummyPage, theme, 50);
-      box.innerHTML = `
-        <div class="a4-physical-page" style="width: 100%; height: 100%; background: ${theme.paper}; color: ${theme.ink};">
-          ${coverHtml}
-        </div>
-      `;
-    }
+    // Dynamic preview with any unsaved series inputs
+    const liveSeries = {
+      ...series,
+      title: document.getElementById('series-edit-title')?.value || series.title,
+      subtitle: document.getElementById('series-edit-sub')?.value || series.subtitle,
+      volNumber: document.getElementById('series-edit-vol')?.value || series.volNumber,
+      coverTemplate: document.getElementById('studio-cover-template-select')?.value || series.coverTemplate || 'cascade'
+    };
+
+    box.innerHTML = `
+      <div class="a4-physical-page" style="width: 100%; height: 100%; padding: 0; overflow: hidden; background: ${liveSeries.coverImage ? '#111418' : theme.paper};">
+        ${renderCoverHTML(liveSeries, theme, 'studio')}
+      </div>
+    `;
     return;
   }
 
@@ -1182,8 +1308,8 @@ function setupCoverPhotoEvents() {
 
   // Apply Crop
   document.getElementById('btn-apply-crop')?.addEventListener('click', () => {
-    if (!canvas) return;
-    const croppedBase64 = canvas.toDataURL('image/jpeg', 0.92);
+    const croppedBase64 = getCroppedPhotoCleanBase64();
+    if (!croppedBase64) return;
     seriesRegistry.updateCoverPhoto(State.currentEbookId, croppedBase64, {
       zoom: State.crop.zoom,
       offsetX: State.crop.offsetX,
@@ -1196,9 +1322,60 @@ function setupCoverPhotoEvents() {
   });
 }
 
+function getCroppedPhotoCleanBase64() {
+  const canvas = document.getElementById('crop-preview-canvas');
+  if (!State.crop.imageObj) {
+    return canvas ? canvas.toDataURL('image/jpeg', 0.94) : null;
+  }
+  const offCanvas = document.createElement('canvas');
+  offCanvas.width = 1240;
+  offCanvas.height = 1754; // High-res A4 ratio (210:297)
+  const offCtx = offCanvas.getContext('2d');
+  const w = offCanvas.width;
+  const h = offCanvas.height;
+
+  const scaleRatio = w / 420;
+
+  offCtx.fillStyle = '#111418';
+  offCtx.fillRect(0, 0, w, h);
+
+  offCtx.save();
+  offCtx.translate(w / 2 + (State.crop.offsetX || 0) * scaleRatio, h / 2 + (State.crop.offsetY || 0) * scaleRatio);
+  if (State.crop.rotation) offCtx.rotate((State.crop.rotation * Math.PI) / 180);
+  offCtx.scale(State.crop.zoom || 1, State.crop.zoom || 1);
+
+  const img = State.crop.imageObj;
+  const imgRatio = (img.naturalWidth || img.width) / (img.naturalHeight || img.height);
+  const canvasRatio = w / h;
+
+  let drawW, drawH;
+  if (imgRatio > canvasRatio) {
+    drawH = h;
+    drawW = h * imgRatio;
+  } else {
+    drawW = w;
+    drawH = w / imgRatio;
+  }
+
+  offCtx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+  offCtx.restore();
+
+  return offCanvas.toDataURL('image/jpeg', 0.94);
+}
+
 function openCropModal() {
   const modal = document.getElementById('cover-crop-modal');
   if (modal) modal.style.display = 'flex';
+  const series = seriesRegistry.getById(State.currentEbookId);
+  if (!State.crop.imageObj && series && series.coverImage) {
+    const img = new Image();
+    img.onload = () => {
+      State.crop.imageObj = img;
+      drawCropPreview();
+    };
+    img.src = series.coverImage;
+    return;
+  }
   drawCropPreview();
 }
 
@@ -1219,13 +1396,13 @@ function drawCropPreview() {
   ctx.fillRect(0, 0, w, h);
 
   ctx.save();
-  ctx.translate(w / 2 + State.crop.offsetX, h / 2 + State.crop.offsetY);
-  ctx.rotate((State.crop.rotation * Math.PI) / 180);
-  ctx.scale(State.crop.zoom, State.crop.zoom);
+  ctx.translate(w / 2 + (State.crop.offsetX || 0), h / 2 + (State.crop.offsetY || 0));
+  if (State.crop.rotation) ctx.rotate((State.crop.rotation * Math.PI) / 180);
+  ctx.scale(State.crop.zoom || 1, State.crop.zoom || 1);
 
   const img = State.crop.imageObj;
   // Fit image aspect ratio to cover canvas
-  const imgRatio = img.width / img.height;
+  const imgRatio = (img.naturalWidth || img.width) / (img.naturalHeight || img.height);
   const canvasRatio = w / h;
 
   let drawW, drawH;
@@ -1239,6 +1416,40 @@ function drawCropPreview() {
 
   ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
   ctx.restore();
+
+  // Draw Typographic Guideline & Masthead Overlay so user frames photo accurately
+  const series = seriesRegistry.getById(State.currentEbookId);
+  const title = series ? (series.title || 'Monograph Title') : 'Monograph Title';
+  const subtitle = series ? (series.subtitle || 'Publication Subtitle') : 'Publication Subtitle';
+  const vol = series ? (series.volNumber || 'VOL. 01') : 'VOL. 01';
+
+  // Gradient guide
+  const grad = ctx.createLinearGradient(0, h * 0.45, 0, h);
+  grad.addColorStop(0, 'rgba(0,0,0,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.85)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, w, h);
+
+  // Safe margin guide border
+  ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(20, 20, w - 40, h - 40);
+
+  // Overlay text preview
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '700 11px "Michelangelus", sans-serif';
+  ctx.fillText(vol.toUpperCase(), 32, h - 84);
+
+  ctx.font = '700 20px "Michelangelus", sans-serif';
+  ctx.fillText(title, 32, h - 58);
+
+  ctx.fillStyle = 'rgba(255,255,255,0.85)';
+  ctx.font = '400 11px "Michelangelus", sans-serif';
+  ctx.fillText(subtitle, 32, h - 40);
+
+  ctx.font = '700 8px "Michelangelus", sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.55)';
+  ctx.fillText('ruangrobin  ·  MONOGRAPH COVER ALIGNMENT GUIDE', 32, h - 22);
 }
 
 // ========================================================
@@ -1481,11 +1692,25 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStudioLivePreview();
   });
 
-  document.getElementById('btn-preview-download')?.addEventListener('click', () => {
+  document.getElementById('btn-preview-download')?.addEventListener('click', async () => {
     const canvas = document.createElement('canvas');
     const series = seriesRegistry.getById(State.currentEbookId);
     if (!series) return;
-    const cur = series.pages.find(p => p.id === State.editingSlideId) || series.pages[0];
+
+    if (State.studioPreviewMode === 'cover') {
+      showToast('Generating 300 DPI A4 Cover PNG...');
+      await renderCoverToA4Canvas(canvas, series);
+      const link = document.createElement('a');
+      link.download = `ruangrobin-${series.id}-cover.png`;
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+      showToast('A4 Monograph Cover exported.');
+      return;
+    }
+
+    const cur = (series.pages && series.pages.find(p => p.id === State.editingSlideId)) || (series.pages && series.pages[0]);
+    if (!cur) return;
+    showToast('Generating 300 DPI A4 Monograph PNG...');
     renderSlideToA4Canvas(canvas, cur, series, 1, 1);
     const link = document.createElement('a');
     link.download = `preview-${cur.title || 'monograph'}.png`;
@@ -1494,7 +1719,13 @@ document.addEventListener('DOMContentLoaded', () => {
     showToast('A4 Monograph exported.');
   });
 
-  // Series details update
+  // Series details update & live preview binding
+  ['series-edit-title', 'series-edit-vol', 'series-edit-sub', 'studio-cover-template-select'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', () => {
+      if (State.studioPreviewMode === 'cover') updateStudioLivePreview();
+    });
+  });
+
   document.getElementById('btn-save-series-meta')?.addEventListener('click', () => {
     const title = document.getElementById('series-edit-title')?.value;
     const vol = document.getElementById('series-edit-vol')?.value;

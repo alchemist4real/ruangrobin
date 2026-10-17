@@ -5,8 +5,7 @@ const html = fs.readFileSync('index.html', 'utf8');
 
 const dom = new JSDOM(html, {
   runScripts: 'dangerously',
-  resources: 'usable',
-  url: 'http://localhost:8089/'
+  url: 'http://localhost/'
 });
 
 const { window } = dom;
@@ -126,27 +125,42 @@ if (shelfCards.length < 3) throw new Error('Expected at least 3 shelf cards, got
 console.log('Shelf View verification passed.');
 
 console.log('=== TEST 4: TAB 2 — READER VIEW ===');
-// Click the first card
+// Click the first card -> opens at page -1 (Cover Plate)
 shelfCards[0].click();
 if (state.currentView !== 'reader') throw new Error('Clicking shelf card should open reader');
 console.log('Active edition:', state.currentEbookId, 'Page:', state.currentPageIndex);
+if (state.currentPageIndex !== -1) throw new Error('Expected initial reader page to be -1 (Cover Plate), got ' + state.currentPageIndex);
 
 const stage = document.getElementById('reader-poem-stage');
-if (!stage || stage.innerHTML.length < 100) throw new Error('Reader stage failed to render page content');
+if (!stage || stage.innerHTML.length < 100) throw new Error('Reader stage failed to render cover plate content');
 
-// Flipper step Next
+const pageInd = document.getElementById('reader-page-indicator');
+if (!pageInd || !pageInd.textContent.includes('Cover Plate')) throw new Error('Reader indicator missing Cover Plate text');
+
+// Export Cover Plate A4 PNG
+document.getElementById('btn-download-poem').click();
+
+// Flipper step Next -> moves to Slide 0 (Page 1)
 document.getElementById('btn-page-next').click();
-if (state.currentPageIndex !== 1) throw new Error('Next page failed');
+if (state.currentPageIndex !== 0) throw new Error('Next page from cover failed, expected 0 got ' + state.currentPageIndex);
 
-// Flipper step Prev
+// Flipper step Next -> moves to Slide 1 (Page 2)
+document.getElementById('btn-page-next').click();
+if (state.currentPageIndex !== 1) throw new Error('Next page failed, expected 1 got ' + state.currentPageIndex);
+
+// Flipper step Prev -> moves back to Slide 0
 document.getElementById('btn-page-prev').click();
-if (state.currentPageIndex !== 0) throw new Error('Prev page failed');
+if (state.currentPageIndex !== 0) throw new Error('Prev page failed, expected 0 got ' + state.currentPageIndex);
+
+// Flipper step Prev -> moves back to Cover Plate (-1)
+document.getElementById('btn-page-prev').click();
+if (state.currentPageIndex !== -1) throw new Error('Prev page to cover failed, expected -1 got ' + state.currentPageIndex);
 
 // Keyboard arrows
 window.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowRight' }));
-if (state.currentPageIndex !== 1) throw new Error('ArrowRight navigation failed');
+if (state.currentPageIndex !== 0) throw new Error('ArrowRight navigation failed');
 window.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowLeft' }));
-if (state.currentPageIndex !== 0) throw new Error('ArrowLeft navigation failed');
+if (state.currentPageIndex !== -1) throw new Error('ArrowLeft navigation failed');
 
 // Table of contents modal
 document.getElementById('btn-reader-toc').click();
@@ -158,9 +172,6 @@ if (tocContainer.children.length < 3) throw new Error('TOC chapters count insuff
 
 document.getElementById('btn-close-reader-toc').click();
 if (tocModal.style.display !== 'none') throw new Error('Close TOC modal failed');
-
-// Export A4 PNG
-document.getElementById('btn-download-poem').click();
 
 // Export E-Book PDF
 document.getElementById('btn-reader-pdf').click();
@@ -235,6 +246,19 @@ if (hexInps.length > 0) {
 }
 const presetBtn = document.querySelector('.preset-pill-btn[data-preset="swiss"]');
 if (presetBtn) presetBtn.click();
+
+// Test Studio Live Preview Mode: Cover vs Page
+document.getElementById('btn-preview-mode-cover').click();
+if (state.studioPreviewMode !== 'cover') throw new Error('Cover preview mode failed to activate');
+const liveBox = document.getElementById('studio-live-preview-box');
+if (!liveBox || liveBox.innerHTML.length < 50) throw new Error('Studio live cover preview empty');
+// Download Cover Preview
+document.getElementById('btn-preview-download').click();
+
+document.getElementById('btn-preview-mode-page').click();
+if (state.studioPreviewMode !== 'page') throw new Error('Page preview mode failed to activate');
+// Download Page Preview
+document.getElementById('btn-preview-download').click();
 
 // Modular Export JS and JSON
 document.getElementById('btn-export-series-js').click();
